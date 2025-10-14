@@ -189,7 +189,7 @@
             <button class="btn primary" id="add-cat">+ Add</button>
           </div>
         </div>
-        <p id="add-error" class="error" style="margin-top:8px;<>/p>
+        <p id="add-error" class="error hidden" style="margin-top:8px;"></p>
         <p style="color:var(--muted);margin-top:6px;">Preset color is assigned automatically. You can edit later.</p>
       </div>
 
@@ -550,7 +550,7 @@ function clearError(el) {
       if(empty) empty.classList.add("hidden");
       categories.forEach(c=>{
         const actual = actualByCategory(c.id, selectedMonth);
-        const item = document.createElement("div"); item.className="cat-item"; if (actual > (Number(c.budget) || 0) {item.classList.add("overspent");}
+        const item = document.createElement("div"); item.className="cat-item"; if (actual > (Number(c.budget) || 0)) {item.classList.add("overspent");}
         const sw = document.createElement("div"); sw.className="swatch"; sw.style.background=c.color;
         const mid = document.createElement("div");
         const nm = document.createElement("div"); nm.className="cat-name"; nm.textContent=c.name;
@@ -780,6 +780,7 @@ function renderBudgetProgress(){
   </script>
 </body>
 </html>
+
 
 
 
