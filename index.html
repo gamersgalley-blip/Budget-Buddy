@@ -289,7 +289,42 @@ function showPage(id){["login","dashboard","budget","accounts"].forEach(pid=>{co
 function showError(el,msg){el.textContent=msg;el.classList.remove("hidden")}function clearError(el){el.textContent="";el.classList.add("hidden")}
 function canApplyBudgetChange(delta){const inc=income();if(!(inc>0))return{ok:false,reason:`Please set your monthly income first.`};const total=totalBudget();if(total+delta>inc)return{ok:false,reason:`Total budget exceeds your monthly income of $${inc.toLocaleString()}.`};return{ok:true}}
 function presetFor(n){return PRESETS.find(p=>p.name===n)||PRESETS[0]}
-function addCategory(){const msg=$("#add-error");clearError(msg);const name=$("#cat-select").value;const budget=Number($("#cat-amount").value);if(!name||!(budget>0)){showError(msg,"Choose a category and enter a positive budget.");return}const p=presetFor(name);const existing=categories.find(c=>c.name===name);const current=existing?existing.budget:0;const{ok,reason}=canApplyBudgetChange(budget-current);if(!ok){showError(msg,reason);return}if(existing){existing.budget=budget;existing.color=p.color}else categories.push({id:uid(),name,budget,color:p.color});$("#cat-amount").value="";save()}
+function addCategory() {
+  const msg = $("#add-error");
+  clearError(msg);
+
+  const name = $("#cat-select").value;
+  const budget = Number($("#cat-amount").value);
+  const inc = Number(localStorage.getItem("saavr_v3_4_income") || 0);
+
+  if (!name || !(budget > 0)) {
+    showError(msg, "Choose a category and enter a positive budget.");
+    return;
+  }
+
+  if (!(inc > 0)) {
+    showError(msg, "Please set your monthly income first.");
+    return;
+  }
+
+  const totalBudget = categories.reduce((s, c) => s + (Number(c.budget) || 0), 0);
+  if (totalBudget + budget > inc) {
+    showError(msg, `Total budget exceeds your monthly income of $${inc.toLocaleString()}.`);
+    return;
+  }
+
+  const p = presetFor(name);
+  const existing = categories.find(c => c.name === name);
+  if (existing) {
+    existing.budget = budget;
+    existing.color = p.color;
+  } else {
+    categories.push({ id: uid(), name, budget, color: p.color });
+  }
+
+  $("#cat-amount").value = "";
+  save();
+}
 function clearAll(){if(confirm("Remove all categories and transactions?")){categories=[];transactions=[];save()}}
 function openEdit(id){editingId=id;const c=categories.find(x=>x.id===id);if(!c)return;const nameSel=$("#edit-name");nameSel.innerHTML="";PRESETS.forEach(p=>{const o=document.createElement("option");o.value=p.name;o.textContent=p.name;nameSel.appendChild(o)});nameSel.value=c.name;$("#edit-budget").value=c.budget;const colorSel=$("#edit-color");colorSel.innerHTML="";PRESETS.forEach(p=>{const o=document.createElement("option");o.value=p.color;o.textContent=`${p.name} (${p.color})`;colorSel.appendChild(o)});colorSel.value=c.color;$("#edit-error").textContent="";$("#edit-modal").classList.remove("hidden")}
 function closeEdit(){$("#edit-modal").classList.add("hidden");editingId=null}
@@ -307,7 +342,25 @@ function arcPath(cx,cy,r,start,end){const p1=polarToXY(cx,cy,r,end),p2=polarToXY
 function drawDonutForMonth(svgId,centerId,ym){const svg=document.getElementById(svgId),centerEl=document.getElementById(centerId);while(svg.firstChild)svg.removeChild(svg.firstChild);const cx=130,cy=130,r=100,stroke=30;const inc=income(),spent=totalActual(ym),rem=inc-spent;centerEl.textContent=currency(rem);centerEl.classList.toggle("center-positive",rem>=0);centerEl.classList.toggle("center-negative",rem<0);const bg=document.createElementNS("http://www.w3.org/2000/svg","circle");bg.setAttribute("cx",cx);bg.setAttribute("cy",cy);bg.setAttribute("r",r);bg.setAttribute("fill","none");bg.setAttribute("stroke","var(--ringbg)");bg.setAttribute("stroke-width",String(stroke));svg.appendChild(bg);const totalBud=Math.max(1,totalBudget());let angle=0;const arcMeta=[];categories.forEach(c=>{const share=(Number(c.budget)||0)/totalBud;const start=angle*360,end=(angle+share)*360;arcMeta.push({id:c.id,start,end,color:c.color,name:c.name,budget:c.budget});angle+=share;const base=document.createElementNS("http://www.w3.org/2000/svg","path");base.setAttribute("d",arcPath(cx,cy,r,start,end));base.setAttribute("stroke",mixMuted(c.color,0.4));base.setAttribute("stroke-width",String(stroke));base.setAttribute("fill","none");base.style.cursor="pointer";base.addEventListener("click",(e)=>showSliceTooltip(e,c,inc,ym));svg.appendChild(base)});arcMeta.forEach(meta=>{const catBudget=Number(meta.budget)||0;const catActual=Math.min(actualByCategory(meta.id,ym),catBudget);const frac=catBudget?(catActual/catBudget):0;if(frac<=0)return;const bright=document.createElementNS("http://www.w3.org/2000/svg","path");const brightEnd=meta.start+(meta.end-meta.start)*frac;bright.setAttribute("d",arcPath(cx,cy,r,meta.start,brightEnd));bright.setAttribute("stroke",meta.color);bright.setAttribute("stroke-width",String(stroke));bright.setAttribute("fill","none");bright.style.cursor="pointer";const cat=categories.find(c=>c.id===meta.id);bright.addEventListener("click",(e)=>showSliceTooltip(e,cat,inc,ym));svg.appendChild(bright)})}
 function showSliceTooltip(evt,cat,inc,ym){const tip=document.getElementById("tooltip");const actual=actualByCategory(cat.id,ym);const pctIncome=inc>0?Math.round((Number(actual)/inc)*100):0;tip.innerHTML=`<div class="title">${cat.name} <span class="pill">${pctIncome}% of income</span></div><div class="row"><span style="color:var(--muted)">Budget</span><b>$${(cat.budget||0).toLocaleString()}</b></div><div class="row"><span style="color:var(--muted)">Actual (${monthLabel(ym)})</span><b>$${(actual||0).toLocaleString()}</b></div>`;const x=evt.clientX+12,y=evt.clientY+12;tip.style.left=x+"px";tip.style.top=y+"px";tip.classList.add("visible");clearTimeout(tip._t);tip._t=setTimeout(()=>tip.classList.remove("visible"),2500);document.addEventListener("click",function once(){tip.classList.remove("visible")},{once:true})}
 function drawDonuts(){drawDonutForMonth("budget-donut","budget-center",selectedMonth);drawDonutForMonth("dash-donut","dash-center",selectedMonth);const dm=$("#dash-month");if(dm){dm.textContent=" — "+monthLabel(selectedMonth)}}
-function setProgress(elId,spent,inc){const bar=document.getElementById(elId+"-progress");const lbl=document.getElementById(elId+"-progress-label");const pct=inc>0?Math.min(100,Math.round((spent/inc)*100)):0;if(bar){bar.style.width=pct+"%";if(spent>inc)bar.classList.add("danger");else bar.classList.remove("danger")}if(lbl){lbl.textContent=`$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`}}
+function setProgress(elId, spent, inc) {
+  const bar = document.getElementById(elId + "-progress");
+  const lbl = document.getElementById(elId + "-progress-label");
+  const pct = inc > 0 ? Math.min(100, Math.round((spent / inc) * 100)) : 0;
+
+  if (bar) {
+    bar.style.width = pct + "%";
+    // Turn red when overspent
+    if (spent > inc) {
+      bar.classList.add("danger");
+    } else {
+      bar.classList.remove("danger");
+    }
+  }
+
+  if (lbl) {
+    lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
+  }
+}
 function renderDashboardProgress(){setProgress("dash",totalActual(selectedMonth),income())}
 function renderBudgetProgress(){setProgress("budget",totalActual(selectedMonth),income())}
 function renderAll(){const addSel=document.getElementById("cat-select");if(addSel){addSel.innerHTML="";PRESETS.forEach(p=>{const o=document.createElement("option");o.value=p.name;o.textContent=p.name;addSel.appendChild(o)})}renderCategoryList();renderTxList();populateTxCategoryDropdown();drawDonuts();renderDashboardProgress();renderBudgetProgress()}
