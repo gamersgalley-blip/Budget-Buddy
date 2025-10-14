@@ -692,11 +692,15 @@ function clearError(el) {
   });
 }
     function drawDonuts(){
-      drawDonutForMonth("budget-donut","budget-center", selectedMonth);
-      drawDonutForMonth("dash-donut","dash-center", selectedMonth);
-      const dm = $("#dash-month"); if(dm){ dm.textContent = " — " + monthLabel(selectedMonth); }
-    }
+  // Dashboard always uses current month
+  const currentYM = getCurrentYM();
+  drawDonutForMonth("dash-donut", "dash-center", currentYM);
+  const dm = $("#dash-month");
+  if (dm) dm.textContent = " — " + monthLabel(currentYM);
 
+  // Budget uses whatever month user selected
+  drawDonutForMonth("budget-donut", "budget-center", selectedMonth);
+}
     /************ PROGRESS BARS (month-filtered) ************/
     function renderDashboardProgress(){
   const inc = income();
@@ -820,6 +824,7 @@ function hideTooltip() {
   </script>
 </body>
 </html>
+
 
 
 
