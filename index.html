@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saavr App</title>
+  <style>
+    :root {
+      --mint: #50C3A3;
+      --dark-bg: #1E2428;
+      --light-bg: #F8F8F6;
+      --text-primary: #F8F8F6;
+      --text-secondary: #C4C9CC;
+      --expense-red: #FF6B6B;
+      --neutral-gray: #3A444A;
+      --card: #252C31;
+      --shadow: rgba(0,0,0,0.35);
+      --ring-bg: #2A3237;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;}
+    body{background:#1E2428;color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;}
+    .hidden{display:none !important;}
+
+    /* Header */
+    header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#222A2F;box-shadow:0 2px 6px var(--shadow);position:sticky;top:0;z-index:2;}
+    header h1{color:var(--mint);font-size:18px;letter-spacing:.5px;}
+    header .gear{opacity:.8;}
+
+    /* Containers & Cards */
+    .container{flex:1;overflow:auto;padding:14px 16px 90px;}
+    .card{background:var(--card);border-radius:14px;padding:14px 14px;margin-bottom:14px;box-shadow:0 6px 12px var(--shadow);}
+    .card h2{font-size:16px;margin-bottom:8px;color:#E8EFEF;}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;}
+    .btn.primary{background:var(--mint);color:#08372D;}
+    .btn.outline{background:transparent;color:var(--mint);border:2px solid var(--mint);}
+    .btn.ghost{background:transparent;color:var(--text-secondary);}
+    .btn.small{padding:6px 10px;border-radius:8px;font-size:12px;}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .right{margin-left:auto;}
+
+    /* Inputs */
+    .input, select, input[type=number], input[type=text], input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--neutral-gray);border-radius:10px;background:#2B3338;color:#E6F2F0;}
+    label{font-size:12px;color:#9BA6AD;margin-bottom:6px;display:block;}
+
+    /* Login */
+    #login{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:14px;text-align:center;}
+    #login h1{color:var(--mint);font-size:34px;margin-bottom:4px;text-shadow:0 0 18px rgba(80,195,163,.3);}
+    #login .panel{width:min(480px,92%);background:#232A2E;border-radius:16px;padding:18px 16px 16px;box-shadow:0 10px 20px var(--shadow);}
+    #login .sub{color:#9BA6AD;font-size:13px;margin-top:8px;}
+    #login .link{color:var(--mint);text-decoration:none;}
+    .error{color:var(--expense-red);font-size:13px;margin-top:6px;}
+
+    /* Donut */
+    .donut{width:220px;height:220px;border-radius:50%;margin:10px auto;position:relative;background:conic-gradient(#2A3237 0 100%);box-shadow:inset 0 0 0 14px #1E2428, 0 6px 12px var(--shadow);}
+    .donut::after{content:"";position:absolute;inset:26px;border-radius:50%;background:#1E2428;box-shadow:inset 0 0 0 8px #1E2428;}
+    .donut-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#C7D4D1;pointer-events:none;}
+
+    /* Category list */
+    .cat-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:12px;background:#20272B;margin-bottom:10px;border:1px solid #30383E;}
+    .swatch{width:18px;height:18px;border-radius:5px;border:2px solid #101416;box-shadow:0 1px 2px var(--shadow);}
+    .cat-name{font-weight:600;}
+    .cat-amount{color:#BFD3CF;font-weight:600;}
+    .cat-actions{display:flex;gap:6px;}
+
+    /* Bottom nav */
+    nav{position:fixed;bottom:0;left:0;right:0;background:#222A2F;border-top:1px solid #2D363B;display:flex;justify-content:space-around;padding:8px 2px 10px;z-index:3;}
+    nav button{background:transparent;border:none;color:#91A2A8;font-weight:600;padding:6px 8px;border-radius:8px;}
+    nav button.active{color:var(--mint);background:rgba(80,195,163,.12);}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:5;}
+    .modal{background:#233038;border:1px solid #334046;border-radius:14px;width:min(520px,92%);padding:14px 14px;}
+    .modal h3{margin-bottom:10px;}
+
+    /* Helpers */
+    .muted{color:#9BA6AD;font-size:12px;}
+    .spacer{height:10px;}
+  </style>
+</head>
+<body>
+  <!-- LOGIN PAGE -->
+  <section id="login">
+    <div class="panel">
+      <h1>Saavr</h1>
+      <p class="sub">Sign in to manage your budget and accounts</p>
+      <div class="spacer"></div>
+      <div>
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="admin" autocomplete="username" />
+      </div>
+      <div style="margin-top:10px;">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••" autocomplete="current-password" />
+      </div>
+      <p id="login-error" class="error hidden">Invalid username or password.</p>
+      <div class="spacer"></div>
+      <button class="btn primary" id="login-btn">Login</button>
+      <p class="sub" style="margin-top:10px;">Don’t have an account? <a href="#" class="link" onclick="alert('Sign-up flow coming soon')">Create account</a></p>
+      <p class="muted" style="margin-top:8px;">Demo credentials — Username: <strong>admin</strong> • Password: <strong>1234</strong></p>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="hidden">
+    <header><h1>Saavr</h1><div class="gear">⚙️</div></header>
+    <div class="container">
+      <div class="card">
+        <div class="row">
+          <h2>Accounts</h2>
+          <button class="btn outline right" onclick="alert('Account linking coming soon')">+ Add Account</button>
+        </div>
+        <p class="muted" style="margin-top:6px;">No accounts yet.</p>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <h2>Budget</h2>
+          <button class="btn ghost right" onclick="showPage('budget')">View Budget →</button>
+        </div>
+        <div class="donut" id="dashboard-donut">
+          <div class="donut-label" id="dashboard-donut-label">No categories</div>
+        </div>
+        <p class="muted" style="text-align:center;">Add categories in the Budget tab to populate this chart.</p>
+      </div>
+    </div>
+
+    <nav>
+      <button class="active" onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button onclick="showPage('budget')">💰 Budget</button>
+      <button onclick="showPage('accounts')">🏦 Accounts</button>
+      <button disabled>📈 Insights</button>
+      <button disabled>👤 Profile</button>
+    </nav>
+  </section>
+
+  <!-- BUDGET -->
+  <section id="budget" class="hidden">
+    <header>
+      <h1>Budget</h1>
+      <div class="row right">
+        <select id="month-select" aria-label="Select month">
+          <option>October 2025</option>
+        </select>
+      </div>
+    </header>
+    <div class="container">
+      <div class="card">
+        <h2>Overview</h2>
+        <div class="donut" id="budget-donut">
+          <div class="donut-label" id="budget-donut-label">No categories</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Create Category</h2>
+        <div class="row">
+          <div style="flex:1;min-width:180px;">
+            <label for="cat-select">Category</label>
+            <select id="cat-select"></select>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <label for="cat-amount">Amount ($)</label>
+            <input id="cat-amount" type="number" min="0" step="1" placeholder="0" />
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button class="btn primary" id="add-cat-btn">+ Add</button>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:8px;">Preset color is assigned automatically. You can edit it later.</p>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <h2>Categories</h2>
+          <button class="btn ghost right small" onclick="clearAllCategories()">Clear All</button>
+        </div>
+        <div id="cat-list" style="margin-top:8px;"></div>
+        <p id="no-cats" class="muted">No categories yet. Add one above.</p>
+      </div>
+    </div>
+
+    <nav>
+      <button onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button class="active" onclick="showPage('budget')">💰 Budget</button>
+      <button onclick="showPage('accounts')">🏦 Accounts</button>
+      <button disabled>📈 Insights</button>
+      <button disabled>👤 Profile</button>
+    </nav>
+  </section>
+
+  <!-- ACCOUNTS -->
+  <section id="accounts" class="hidden">
+    <header>
+      <h1>Accounts</h1>
+      <button class="btn outline right" onclick="alert('Account linking coming soon')">+ Add Account</button>
+    </header>
+    <div class="container">
+      <div class="card">
+        <h2>Connected Accounts</h2>
+        <p class="muted">No accounts yet.</p>
+      </div>
+    </div>
+    <nav>
+      <button onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button onclick="showPage('budget')">💰 Budget</button>
+      <button class="active" onclick="showPage('accounts')">🏦 Accounts</button>
+      <button disabled>📈 Insights</button>
+      <button disabled>👤 Profile</button>
+    </nav>
+  </section>
+
+  <!-- EDIT MODAL -->
+  <div id="edit-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+    <div class="modal">
+      <h3 id="edit-title">Edit Category</h3>
+      <div class="row" style="margin-top:8px;">
+        <div style="flex:1;min-width:180px;">
+          <label for="edit-name">Name</label>
+          <select id="edit-name"></select>
+        </div>
+        <div style="flex:1;min-width:140px;">
+          <label for="edit-amount">Amount ($)</label>
+          <input id="edit-amount" type="number" min="0" step="1" />
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <label for="edit-color">Color</label>
+          <select id="edit-color"></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px;justify-content:flex-end;">
+        <button class="btn ghost" onclick="closeEdit()">Cancel</button>
+        <button class="btn primary" onclick="saveEdit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /************ APP STATE ************/
+    const PRESET_CATEGORIES = [
+      { name: "Food & Dining", color: "#6EE7B7" },
+      { name: "Rent / Mortgage", color: "#60A5FA" },
+      { name: "Transportation", color: "#FBBF24" },
+      { name: "Utilities", color: "#F87171" },
+      { name: "Subscriptions", color: "#C084FC" },
+      { name: "Health & Fitness", color: "#34D399" },
+      { name: "Work / Education", color: "#A78BFA" },
+      { name: "Entertainment", color: "#F472B6" },
+      { name: "Shopping", color: "#FACC15" },
+      { name: "Savings", color: "#4ADE80" },
+    ];
+    const COLOR_CHOICES = PRESET_CATEGORIES.map(c => ({label: c.name, value: c.color}));
+    const STORAGE_KEY = "saavr_categories";
+    const LOGIN_KEY = "saavr_logged_in";
+
+    let categories = [];        // [{id, name, amount, color}]
+    let editId = null;          // id of category currently being edited
+
+    /************ UTILITIES ************/
+    const $ = sel => document.querySelector(sel);
+    const el = (tag, attrs={}, children=[]) => {
+      const e = document.createElement(tag);
+      Object.entries(attrs).forEach(([k,v]) => {
+        if (k === "class") e.className = v;
+        else if (k === "style") e.style.cssText = v;
+        else if (k.startsWith("on")) e.addEventListener(k.substring(2), v);
+        else e.setAttribute(k, v);
+      });
+      children.forEach(c => e.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
+      return e;
+    };
+    const uid = () => Math.random().toString(36).slice(2,9);
+
+    function saveCategories() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
+      render();
+    }
+    function loadCategories() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        categories = raw ? JSON.parse(raw) : [];
+      } catch (e) { categories = []; }
+    }
+
+    /************ LOGIN ************/
+    function initLogin() {
+      const logged = sessionStorage.getItem(LOGIN_KEY) === "1";
+      if (logged) {
+        $("#login").classList.add("hidden");
+        $("#dashboard").classList.remove("hidden");
+      } else {
+        $("#login").classList.remove("hidden");
+        $("#dashboard").classList.add("hidden");
+        $("#budget").classList.add("hidden");
+        $("#accounts").classList.add("hidden");
+      }
+      $("#login-btn").addEventListener("click", () => {
+        const u = $("#username").value.trim();
+        const p = $("#password").value.trim();
+        if (u === "admin" && p === "1234") {
+          sessionStorage.setItem(LOGIN_KEY, "1");
+          showPage("dashboard");
+          $("#login").classList.add("hidden");
+          $("#login-error").classList.add("hidden");
+        } else {
+          $("#login-error").classList.remove("hidden");
+        }
+      });
+    }
+
+    /************ NAVIGATION ************/
+    function showPage(id) {
+      ["login","dashboard","budget","accounts"].forEach(pid => {
+        const sec = document.getElementById(pid);
+        if (!sec) return;
+        if (pid === id) sec.classList.remove("hidden"); else sec.classList.add("hidden");
+      });
+      // toggle active state in bottom navs
+      document.querySelectorAll("nav").forEach(nav => {
+        nav.querySelectorAll("button").forEach(btn => {
+          if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(id)) {
+            btn.classList.add("active");
+          } else {
+            btn.classList.remove("active");
+          }
+        });
+      });
+      renderDonuts();
+    }
+
+    /************ DONUT RENDERING ************/
+    function donutGradient(data) {
+      // data: [{amount, color}]
+      const total = data.reduce((s,d)=>s+Math.max(0, Number(d.amount)||0), 0);
+      if (!total) return "conic-gradient(#2A3237 0 100%)";
+      let acc = 0;
+      const parts = data.map(d => {
+        const val = Math.max(0, Number(d.amount)||0);
+        const start = (acc / total) * 100;
+        acc += val;
+        const end = (acc / total) * 100;
+        return `${d.color} ${start}% ${end}%`;
+      });
+      // fill any remaining gap with ring bg to avoid subpixel seam
+      parts.push(`#2A3237 ${acc/total*100}% 100%`);
+      return `conic-gradient(${parts.join(", ")})`;
+    }
+    function renderDonuts() {
+      const data = categories.map(c => ({amount: c.amount, color: c.color}));
+      const bg = donutGradient(data);
+      const has = categories.length > 0;
+      const dashDonut = $("#dashboard-donut");
+      const dashLbl = $("#dashboard-donut-label");
+      const budgDonut = $("#budget-donut");
+      const budgLbl = $("#budget-donut-label");
+      dashDonut.style.background = bg;
+      budgDonut.style.background = bg;
+      dashLbl.textContent = has ? "" : "No categories";
+      budgLbl.textContent = has ? "" : "No categories";
+    }
+
+    /************ CATEGORY UI ************/
+    function populatePresetDropdowns() {
+      const catSel = $("#cat-select");
+      catSel.innerHTML = "";
+      PRESET_CATEGORIES.forEach(c => {
+        const opt = el("option", {value: c.name}, [c.name]);
+        catSel.appendChild(opt);
+      });
+
+      const editName = $("#edit-name");
+      editName.innerHTML = "";
+      PRESET_CATEGORIES.forEach(c => {
+        const opt = el("option", {value: c.name}, [c.name]);
+        editName.appendChild(opt);
+      });
+
+      const editColor = $("#edit-color");
+      editColor.innerHTML = "";
+      COLOR_CHOICES.forEach(c => {
+        const opt = el("option", {value: c.value}, [`${c.label} (${c.value})`]);
+        editColor.appendChild(opt);
+      });
+    }
+
+    function addCategory() {
+      const name = $("#cat-select").value;
+      const preset = PRESET_CATEGORIES.find(c => c.name === name);
+      const amount = Number($("#cat-amount").value);
+      if (!name || isNaN(amount) || amount <= 0) {
+        alert("Please choose a category and enter a positive amount.");
+        return;
+      }
+      // Prevent duplicates by name; if exists, update amount instead
+      const existing = categories.find(c => c.name === name);
+      if (existing) {
+        existing.amount = amount;
+        existing.color = preset.color; // sync preset color
+      } else {
+        categories.push({ id: uid(), name, amount, color: preset.color });
+      }
+      $("#cat-amount").value = "";
+      saveCategories();
+    }
+
+    function clearAllCategories() {
+      if (!confirm("Remove all categories?")) return;
+      categories = [];
+      saveCategories();
+    }
+
+    function renderCategoryList() {
+      const list = $("#cat-list");
+      const empty = $("#no-cats");
+      list.innerHTML = "";
+      if (!categories.length) {
+        empty.classList.remove("hidden");
+        return;
+      }
+      empty.classList.add("hidden");
+      categories.forEach(c => {
+        const item = el("div", {class:"cat-item"}, [
+          el("div", {class:"swatch", style:`background:${c.color};`}),
+          el("div", {}, [
+            el("div", {class:"cat-name"}, [c.name]),
+            el("div", {class:"muted"}, [`Color: ${c.color}`])
+          ]),
+          el("div", {}, [
+            el("div", {class:"cat-amount"}, [`$${Number(c.amount).toLocaleString()}`]),
+            el("div", {class:"cat-actions"}, [
+              el("button", {class:"btn ghost small", onclick: () => openEdit(c.id)}, ["✏️ Edit"]),
+              el("button", {class:"btn ghost small", onclick: () => deleteCategory(c.id)}, ["🗑️ Delete"]),
+            ])
+          ])
+        ]);
+        list.appendChild(item);
+      });
+    }
+
+    function deleteCategory(id) {
+      categories = categories.filter(c => c.id !== id);
+      saveCategories();
+    }
+
+    function openEdit(id) {
+      editId = id;
+      const c = categories.find(x => x.id === id);
+      if (!c) return;
+      $("#edit-name").value = c.name;
+      $("#edit-amount").value = c.amount;
+      $("#edit-color").value = c.color;
+      $("#edit-modal").classList.remove("hidden");
+    }
+    function closeEdit() {
+      $("#edit-modal").classList.add("hidden");
+      editId = null;
+    }
+    function saveEdit() {
+      const c = categories.find(x => x.id === editId);
+      if (!c) return;
+      const name = $("#edit-name").value;
+      const amount = Number($("#edit-amount").value);
+      const color = $("#edit-color").value;
+      if (!name || isNaN(amount) || amount <= 0) {
+        alert("Please set a valid name and positive amount.");
+        return;
+      }
+      c.name = name;
+      c.amount = amount;
+      c.color = color;
+      closeEdit();
+      saveCategories();
+    }
+
+    function render() {
+      renderCategoryList();
+      renderDonuts();
+    }
+
+    /************ INIT ************/
+    window.addEventListener("DOMContentLoaded", () => {
+      populatePresetDropdowns();
+      loadCategories();
+      initLogin();
+
+      $("#add-cat-btn").addEventListener("click", addCategory);
+      render();
+
+      // If logged in previously in this tab, land on dashboard
+      if (sessionStorage.getItem(LOGIN_KEY) === "1") {
+        showPage("dashboard");
+      } else {
+        showPage("login");
+      }
+    });
+  </script>
+</body>
+</html>
