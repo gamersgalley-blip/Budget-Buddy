@@ -188,6 +188,7 @@
             <button class="btn primary" id="add-cat">+ Add</button>
           </div>
         </div>
+        <p id="add-error" class="error" style="margin-top:8px;<>/p>
         <p style="color:var(--muted);margin-top:6px;">Preset color is assigned automatically. You can edit later.</p>
       </div>
 
@@ -406,6 +407,18 @@
 
     /************ CATEGORY CRUD ************/
     function presetFor(name){ return PRESETS.find(p=>p.name===name) || PRESETS[0]; }
+    function showError(el, msg) {
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove("hidden");
+}
+
+function clearError(el) {
+  if (!el) return;
+  el.textContent = "";
+  el.classList.add("hidden");
+}
+
    function addCategory() {
   const msg = $("#add-error");
   clearError(msg);
@@ -766,4 +779,5 @@ function renderBudgetProgress(){
   </script>
 </body>
 </html>
+
 
