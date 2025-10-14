@@ -654,7 +654,8 @@ function clearError(el) {
     base.setAttribute("stroke-width", String(stroke));
     base.setAttribute("fill", "none");
     base.style.cursor = "pointer";
-    base.addEventListener("click", e => showSliceTooltip(e, c, inc, ym));
+    base.addEventListener("mousemove", e => showSliceTooltip(e, c, inc, ym));
+    base.addEventListener("mouseleave", hideTooltip);
     svg.appendChild(base);
   });
 
@@ -685,7 +686,8 @@ function clearError(el) {
     bright.setAttribute("fill", "none");
     bright.style.cursor = "pointer";
     const cat = categories.find(c => c.id === meta.id);
-    bright.addEventListener("click", e => showSliceTooltip(e, cat, inc, ym));
+    bright.addEventListener("mousemove", e => showSliceTooltip(e, cat, inc, ym));
+    bright.addEventListener("mouseleave", hideTooltip);
     svg.appendChild(bright);
   });
 }
@@ -737,7 +739,42 @@ function renderBudgetProgress(){
     lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
   }
 }
+    
+/************ TOOLTIP (Hover Info) ************/
+function showSliceTooltip(evt, cat, inc, ym) {
+  const tip = document.getElementById("tooltip");
+  const actual = actualByCategory(cat.id, ym);
+  const budget = Number(cat.budget) || 0;
+  const diff = actual - budget;
 
+  const spentLine = `<div class="row"><span style="color:var(--muted)">Spent</span><b>$${actual.toLocaleString()}</b></div>`;
+  const budgetLine = `<div class="row"><span style="color:var(--muted)">Budget</span><b>$${budget.toLocaleString()}</b></div>`;
+
+  let diffLine = "";
+  if (diff > 0) {
+    diffLine = `<div class="row"><span style="color:var(--muted)">Over by</span><b style="color:var(--danger)">+$${diff.toLocaleString()}</b></div>`;
+  } else {
+    const left = Math.abs(diff);
+    diffLine = `<div class="row"><span style="color:var(--muted)">Left</span><b style="color:var(--mint)">$${left.toLocaleString()}</b></div>`;
+  }
+
+  tip.innerHTML = `
+    <div class="title">${cat.name}</div>
+    ${spentLine}
+    ${budgetLine}
+    ${diffLine}
+  `;
+
+  // follow cursor
+  tip.style.left = evt.clientX + 14 + "px";
+  tip.style.top = evt.clientY + 14 + "px";
+  tip.classList.add("visible");
+}
+
+function hideTooltip() {
+  const tip = document.getElementById("tooltip");
+  if (tip) tip.classList.remove("visible");
+}
 
     /************ RENDER ALL ************/
     function renderAll(){
@@ -783,6 +820,7 @@ function renderBudgetProgress(){
   </script>
 </body>
 </html>
+
 
 
 
