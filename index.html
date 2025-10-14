@@ -61,6 +61,7 @@
 
     /* Category / Transaction rows */
     .cat-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:12px;background:#20272B;margin-bottom:10px;border:1px solid #30383E;}
+    .cat-item.overspent{background: rgba(255,107,107,0.12);border-color: rgba(255,107,107,0.55);}
     .swatch{width:18px;height:18px;border-radius:5px;border:2px solid #101416;box-shadow:0 1px 2px var(--shadow);}
     .cat-name{font-weight:600;}
     .cat-amount{color:#CFE1DE;font-weight:700;}
@@ -549,7 +550,7 @@ function clearError(el) {
       if(empty) empty.classList.add("hidden");
       categories.forEach(c=>{
         const actual = actualByCategory(c.id, selectedMonth);
-        const item = document.createElement("div"); item.className="cat-item";
+        const item = document.createElement("div"); item.className="cat-item"; if (actual > (Number(c.budget) || 0) {item.classList.add("overspent");}
         const sw = document.createElement("div"); sw.className="swatch"; sw.style.background=c.color;
         const mid = document.createElement("div");
         const nm = document.createElement("div"); nm.className="cat-name"; nm.textContent=c.name;
@@ -779,5 +780,6 @@ function renderBudgetProgress(){
   </script>
 </body>
 </html>
+
 
 
