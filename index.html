@@ -612,80 +612,83 @@ function clearError(el) {
       return `M ${p1.x} ${p1.y} A ${r} ${r} 0 ${large} 0 ${p2.x} ${p2.y}`;
     }
     function drawDonutForMonth(svgId, centerId, ym){
-      const svg = document.getElementById(svgId);
-      const centerEl = document.getElementById(centerId);
-      while(svg.firstChild) svg.removeChild(svg.firstChild);
-      const cx=130,cy=130, r=100, stroke=30;
+  const svg = document.getElementById(svgId);
+  const centerEl = document.getElementById(centerId);
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
 
-      const inc = income();
-      const spent = totalActual(ym);
-      const rem = inc - spent;
-      centerEl.textContent = `$${Math.max(0, Math.round(rem)).toLocaleString()}`;
-      centerEl.classList.toggle("center-positive", rem>=0);
-      centerEl.classList.toggle("center-negative", rem<0);
+  const cx = 130, cy = 130, r = 100, stroke = 30;
+  const inc = income() || 1; // avoid divide-by-zero
+  const spent = totalActual(ym);
+  const rem = inc - spent;
 
-      // Background faint ring
-      const bg = document.createElementNS("http://www.w3.org/2000/svg","circle");
-      bg.setAttribute("cx", cx); bg.setAttribute("cy", cy); bg.setAttribute("r", r);
-      bg.setAttribute("fill", "none"); bg.setAttribute("stroke", "var(--ringbg)"); bg.setAttribute("stroke-width", String(stroke));
-      svg.appendChild(bg);
+  centerEl.textContent = `$${Math.round(rem).toLocaleString()}`;
+  centerEl.classList.toggle("center-positive", rem >= 0);
+  centerEl.classList.toggle("center-negative", rem < 0);
 
-      const totalBud = Math.max(1, totalBudget());
-      let angle = 0;
+  // Background ring
+  const bg = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  bg.setAttribute("cx", cx);
+  bg.setAttribute("cy", cy);
+  bg.setAttribute("r", r);
+  bg.setAttribute("fill", "none");
+  bg.setAttribute("stroke", "var(--ringbg)");
+  bg.setAttribute("stroke-width", String(stroke));
+  svg.appendChild(bg);
 
-      // Base arcs (muted)
-      const arcMeta = [];
-      categories.forEach(c=>{
-        const share = (Number(c.budget)||0) / totalBud;
-        const start = angle*360, end = (angle+share)*360;
-        arcMeta.push({id:c.id, start, end, color:c.color, name:c.name, budget:c.budget});
-        angle += share;
-        const base = document.createElementNS("http://www.w3.org/2000/svg","path");
-        base.setAttribute("d", arcPath(cx,cy,r,start,end));
-        base.setAttribute("stroke", mixMuted(c.color,0.4));
-        base.setAttribute("stroke-width", String(stroke));
-        base.setAttribute("fill","none");
-        base.style.cursor = "pointer";
-        base.addEventListener("click", (e)=>showSliceTooltip(e, c, inc, ym));
-        svg.appendChild(base);
-      });
+  let angle = 0;
+  const arcMeta = [];
 
-      // Bright overlays (actual for selected month)
-      arcMeta.forEach(meta=>{
-        const catBudget = Number(meta.budget)||0;
-        const catActual = Math.min(actualByCategory(meta.id, ym), catBudget);
-        const frac = catBudget ? (catActual / catBudget) : 0;
-        if(frac<=0) return;
-        const bright = document.createElementNS("http://www.w3.org/2000/svg","path");
-        const brightEnd = meta.start + (meta.end - meta.start)*frac;
-        bright.setAttribute("d", arcPath(cx,cy,r,meta.start,brightEnd));
-        bright.setAttribute("stroke", meta.color);
-        bright.setAttribute("stroke-width", String(stroke));
-        bright.setAttribute("fill","none");
-        bright.style.cursor = "pointer";
-        const cat = categories.find(c=>c.id===meta.id);
-        bright.addEventListener("click", (e)=>showSliceTooltip(e, cat, inc, ym));
-        svg.appendChild(bright);
-      });
-    }
-    function showSliceTooltip(evt, cat, inc, ym){
-      const tip = document.getElementById("tooltip");
-      const actual = actualByCategory(cat.id, ym);
-      const pctIncome = inc>0 ? Math.round((Number(actual)/inc)*100) : 0;
-      tip.innerHTML = `
-        <div class="title">${cat.name} <span class="pill">${pctIncome}% of income</span></div>
-        <div class="row"><span style="color:var(--muted)">Budget</span><b>$${(cat.budget||0).toLocaleString()}</b></div>
-        <div class="row"><span style="color:var(--muted)">Actual (${monthLabel(ym)})</span><b>$${(actual||0).toLocaleString()}</b></div>
-      `;
-      const x = evt.clientX+12, y = evt.clientY+12;
-      tip.style.left = x+"px"; tip.style.top = y+"px";
-      tip.classList.add("visible");
-      clearTimeout(tip._t);
-      tip._t = setTimeout(()=>tip.classList.remove("visible"), 2500);
-      document.addEventListener("click", hideTipOnce, { once:true });
-      function hideTipOnce(){ tip.classList.remove("visible"); }
-    }
+  // Draw each category slice proportional to total income
+  categories.forEach(c => {
+    const share = (Number(c.budget) || 0) / inc;
+    if (share <= 0) return;
+    const start = angle * 360;
+    const end = (angle + share) * 360;
+    arcMeta.push({ id: c.id, start, end, color: c.color, name: c.name, budget: c.budget });
+    angle += share;
 
+    // Base muted arc
+    const base = document.createElementNS("http://www.w3.org/2000/svg","path");
+    base.setAttribute("d", arcPath(cx, cy, r, start, end));
+    base.setAttribute("stroke", mixMuted(c.color, 0.4));
+    base.setAttribute("stroke-width", String(stroke));
+    base.setAttribute("fill", "none");
+    base.style.cursor = "pointer";
+    base.addEventListener("click", e => showSliceTooltip(e, c, inc, ym));
+    svg.appendChild(base);
+  });
+
+  // Add remaining-income slice (if not fully allocated)
+  if (angle < 1) {
+    const start = angle * 360;
+    const end = 360;
+    const remPath = document.createElementNS("http://www.w3.org/2000/svg","path");
+    remPath.setAttribute("d", arcPath(cx, cy, r, start, end));
+    remPath.setAttribute("stroke", "#2F3940"); // light gray for unallocated
+    remPath.setAttribute("stroke-width", String(stroke));
+    remPath.setAttribute("fill", "none");
+    svg.appendChild(remPath);
+  }
+
+  // Overlay actuals for selected month
+  arcMeta.forEach(meta => {
+    const catBudget = Number(meta.budget) || 0;
+    const catActual = Math.min(actualByCategory(meta.id, ym), catBudget);
+    const frac = catBudget ? (catActual / catBudget) : 0;
+    if (frac <= 0) return;
+
+    const bright = document.createElementNS("http://www.w3.org/2000/svg","path");
+    const brightEnd = meta.start + (meta.end - meta.start) * frac;
+    bright.setAttribute("d", arcPath(cx, cy, r, meta.start, brightEnd));
+    bright.setAttribute("stroke", meta.color);
+    bright.setAttribute("stroke-width", String(stroke));
+    bright.setAttribute("fill", "none");
+    bright.style.cursor = "pointer";
+    const cat = categories.find(c => c.id === meta.id);
+    bright.addEventListener("click", e => showSliceTooltip(e, cat, inc, ym));
+    svg.appendChild(bright);
+  });
+}
     function drawDonuts(){
       drawDonutForMonth("budget-donut","budget-center", selectedMonth);
       drawDonutForMonth("dash-donut","dash-center", selectedMonth);
@@ -780,6 +783,7 @@ function renderBudgetProgress(){
   </script>
 </body>
 </html>
+
 
 
 
