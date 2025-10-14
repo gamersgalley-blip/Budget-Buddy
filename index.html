@@ -49,6 +49,7 @@
 
     .progress-wrap{width:92%;max-width:520px;margin:8px auto 0;background:#1f262a;border:1px solid #2f3a3f;border-radius:999px;overflow:hidden;}
     .progress-fill{height:18px;background:var(--mint);}
+    .progress-fill.danger {background: var(--danger);}
     .progress-label{margin-top:6px;text-align:center;color:var(--muted);font-weight:700;}
 
     /* Tooltip */
@@ -405,17 +406,42 @@
 
     /************ CATEGORY CRUD ************/
     function presetFor(name){ return PRESETS.find(p=>p.name===name) || PRESETS[0]; }
-    function addCategory(){
-      const name = $("#cat-select").value;
-      const budget = Number($("#cat-amount").value);
-      if(!name || !(budget>0)){ alert("Choose a category and enter a positive budget."); return; }
-      const p = presetFor(name);
-      const existing = categories.find(c=>c.name===name);
-      if(existing){ existing.budget = budget; existing.color = p.color; }
-      else categories.push({id:uid(), name, budget, color:p.color});
-      $("#cat-amount").value="";
-      save();
-    }
+   function addCategory() {
+  const msg = $("#add-error");
+  clearError(msg);
+
+  const name = $("#cat-select").value;
+  const budget = Number($("#cat-amount").value);
+  const inc = Number(localStorage.getItem("saavr_v3_4_income") || 0);
+
+  if (!name || !(budget > 0)) {
+    showError(msg, "Choose a category and enter a positive budget.");
+    return;
+  }
+
+  if (!(inc > 0)) {
+    showError(msg, "Please set your monthly income first.");
+    return;
+  }
+
+  const totalBudget = categories.reduce((s, c) => s + (Number(c.budget) || 0), 0);
+  if (totalBudget + budget > inc) {
+    showError(msg, `Total budget exceeds your monthly income of $${inc.toLocaleString()}.`);
+    return;
+  }
+
+  const p = presetFor(name);
+  const existing = categories.find(c => c.name === name);
+  if (existing) {
+    existing.budget = budget;
+    existing.color = p.color;
+  } else {
+    categories.push({ id: uid(), name, budget, color: p.color });
+  }
+
+  $("#cat-amount").value = "";
+  save();
+}
     function clearAll(){
       if(confirm("Remove all categories and transactions?")){
         categories=[]; transactions=[]; save();
@@ -654,23 +680,47 @@
 
     /************ PROGRESS BARS (month-filtered) ************/
     function renderDashboardProgress(){
-      const inc = income();
-      const spent = totalActual(selectedMonth);
-      const pct = inc>0 ? Math.min(100, Math.round((spent/inc)*100)) : 0;
-      const bar = document.getElementById("dash-progress");
-      const lbl = document.getElementById("dash-progress-label");
-      if(bar) bar.style.width = pct + "%";
-      if(lbl) lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
+  const inc = income();
+  const spent = totalActual(selectedMonth);
+  const pct = inc > 0 ? Math.min(100, Math.round((spent / inc) * 100)) : 0;
+  const bar = document.getElementById("dash-progress");
+  const lbl = document.getElementById("dash-progress-label");
+
+  if (bar) {
+    bar.style.width = pct + "%";
+    // 🔴 turn red when overspent
+    if (spent > inc) {
+      bar.classList.add("danger");
+    } else {
+      bar.classList.remove("danger");
     }
-    function renderBudgetProgress(){
-      const inc = income();
-      const spent = totalActual(selectedMonth);
-      const pct = inc>0 ? Math.min(100, Math.round((spent/inc)*100)) : 0;
-      const bar = document.getElementById("budget-progress");
-      const lbl = document.getElementById("budget-progress-label");
-      if(bar) bar.style.width = pct + "%";
-      if(lbl) lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
+  }
+  if (lbl) {
+    lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
+  }
+}
+
+function renderBudgetProgress(){
+  const inc = income();
+  const spent = totalActual(selectedMonth);
+  const pct = inc > 0 ? Math.min(100, Math.round((spent / inc) * 100)) : 0;
+  const bar = document.getElementById("budget-progress");
+  const lbl = document.getElementById("budget-progress-label");
+
+  if (bar) {
+    bar.style.width = pct + "%";
+    // 🔴 turn red when overspent
+    if (spent > inc) {
+      bar.classList.add("danger");
+    } else {
+      bar.classList.remove("danger");
     }
+  }
+  if (lbl) {
+    lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
+  }
+}
+
 
     /************ RENDER ALL ************/
     function renderAll(){
@@ -716,3 +766,4 @@
   </script>
 </body>
 </html>
+
