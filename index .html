@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saavr App v3.1</title>
+  <style>
+    :root {
+      --mint:#50C3A3;
+      --dark:#1E2428;
+      --card:#252C31;
+      --muted:#9BA6AD;
+      --line:#2F3940;
+      --danger:#FF6B6B;
+      --ringbg:#2A3237;
+      --shadow: rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;}
+    body{background:var(--dark);color:#E9F2F0;min-height:100vh;display:flex;flex-direction:column;}
+    .hidden{display:none!important;}
+
+    header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#222A2F;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
+    header h1{color:var(--mint);font-size:18px;letter-spacing:.3px;}
+    .container{flex:1;overflow:auto;padding:14px 16px 84px;}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 8px 16px var(--shadow);}
+    .card h2{font-size:16px;margin-bottom:8px;color:#E9F2F0;}
+
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .right{margin-left:auto;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;}
+    .primary{background:var(--mint);color:rgb(9,48,39);}
+    .outline{background:transparent;border:2px solid var(--mint);color:var(--mint);}
+    .ghost{background:transparent;color:var(--mint);border:none;font-weight:600;}
+    .small{padding:6px 10px;border-radius:8px;font-size:12px;}
+    label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block;}
+    input, select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#2B3338;color:#E6F2F0;}
+
+    /* Login */
+    #login{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:14px;text-align:center;}
+    #login .panel{width:min(480px,92%);background:#232A2E;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 12px 24px var(--shadow);}
+    #login h1{color:var(--mint);font-size:34px;text-shadow:0 0 18px rgba(80,195,163,.35);}
+    .error{color:var(--danger);font-size:13px;margin-top:6px;}
+
+    /* Donut */
+    .donut-wrap{position:relative;width:260px;height:260px;margin:8px auto;}
+    .donut-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-weight:800;font-size:20px;text-shadow:0 2px 10px rgba(0,0,0,.4);}
+    .center-positive{color:var(--mint);}
+    .center-negative{color:var(--danger);}
+
+    /* Tooltip */
+    .tooltip{position:fixed;z-index:1000;pointer-events:none;background:rgba(22,27,31,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid #3A454C;border-radius:10px;padding:10px 12px;box-shadow:0 10px 20px var(--shadow);color:#EAF2F0;opacity:0;transform:translateY(-6px);transition:opacity .15s ease, transform .15s ease;}
+    .tooltip.visible{opacity:1;transform:translateY(0);}
+    .tooltip .title{font-weight:700;margin-bottom:4px;color:#EAF2F0;}
+    .tooltip .row{justify-content:space-between;}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(80,195,163,.12);border:1px solid rgba(80,195,163,.35);color:var(--mint);font-size:11px;font-weight:700;}
+
+    /* Category list */
+    .cat-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:12px;background:#20272B;margin-bottom:10px;border:1px solid #30383E;}
+    .swatch{width:18px;height:18px;border-radius:5px;border:2px solid #101416;box-shadow:0 1px 2px var(--shadow);}
+    .cat-name{font-weight:600;}
+    .cat-amount{color:#CFE1DE;font-weight:700;}
+    .cat-actions{display:flex;gap:6px;}
+
+    /* Dashboard progress bar */
+    .progress-wrap{width:92%;max-width:520px;margin:8px auto 0;background:#1f262a;border:1px solid #2f3a3f;border-radius:999px;overflow:hidden;}
+    .progress-fill{height:18px;background:var(--mint);}
+    .progress-label{margin-top:6px;text-align:center;color:var(--muted);font-weight:700;}
+
+    nav{position:fixed;bottom:0;left:0;right:0;background:#222A2F;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px 10px;z-index:5;}
+    nav button{background:transparent;border:none;color:#9AA7AD;font-weight:600;padding:6px 8px;border-radius:8px;}
+    nav button.active{color:var(--mint);background:rgba(80,195,163,.12);}
+  </style>
+</head>
+<body>
+  <!-- Tooltip -->
+  <div id="tooltip" class="tooltip"></div>
+
+  <!-- LOGIN -->
+  <section id="login">
+    <div class="panel">
+      <h1>Saavr</h1>
+      <p style="color:var(--muted);margin-top:6px;">Sign in to manage your budget and accounts</p>
+      <label for="u">Username</label>
+      <input id="u" type="text" placeholder="admin">
+      <label for="p">Password</label>
+      <input id="p" type="password" placeholder="••••">
+      <p id="login-err" class="error hidden">Invalid username or password.</p>
+      <button id="login-btn" class="btn primary" style="width:100%;">Login</button>
+      <p style="color:var(--muted);margin-top:8px;">Demo → <b>admin</b> / <b>1234</b></p>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="hidden">
+    <header><h1>Saavr</h1></header>
+    <div class="container">
+      <div class="card">
+        <div class="row">
+          <h2>Accounts</h2>
+          <button class="btn ghost right" onclick="showPage('accounts')">Open Accounts →</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <h2>Budget</h2>
+          <button class="btn ghost right" onclick="showPage('budget')">View Budget →</button>
+        </div>
+        <div class="donut-wrap">
+          <svg id="dash-donut" width="260" height="260"></svg>
+          <div id="dash-center" class="donut-center">$0</div>
+        </div>
+        <div class="progress-wrap">
+          <div id="dash-progress" class="progress-fill" style="width:0%;"></div>
+        </div>
+        <div id="dash-progress-label" class="progress-label">$0 / $0 spent</div>
+      </div>
+    </div>
+    <nav>
+      <button class="active" onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button onclick="showPage('budget')">💰 Budget</button>
+      <button onclick="showPage('accounts')">🏦 Accounts</button>
+    </nav>
+  </section>
+
+  <script>
+    const PRESETS=[{name:"Food & Dining",color:"#6EE7B7"},{name:"Rent / Mortgage",color:"#60A5FA"},{name:"Transportation",color:"#FBBF24"},{name:"Utilities",color:"#F87171"},{name:"Subscriptions",color:"#C084FC"},{name:"Health & Fitness",color:"#34D399"},{name:"Work / Education",color:"#A78BFA"},{name:"Entertainment",color:"#F472B6"},{name:"Shopping",color:"#FACC15"},{name:"Savings",color:"#4ADE80"}];
+    let categories=[],transactions=[];
+    const STORAGE={cats:"saavr_v3_categories",tx:"saavr_v3_transactions",income:"saavr_v3_income",login:"saavr_v3_logged_in"};
+    const $=s=>document.querySelector(s);
+    const uid=()=>Math.random().toString(36).slice(2,9);
+    function income(){return Number(localStorage.getItem(STORAGE.income)||0)}
+    function totalBudget(){return categories.reduce((s,c)=>s+(+c.budget||0),0)}
+    function actualByCategory(id){return transactions.filter(t=>t.categoryId===id).reduce((s,t)=>s+(+t.amount||0),0)}
+    function totalActual(){return categories.reduce((s,c)=>s+actualByCategory(c.id),0)}
+    function mixColor(hex,a){const bg={r:42,g:50,b:55};const c=parseInt(hex.replace('#',''),16);const r=(c>>16)&255,g=(c>>8)&255,b=c&255;return`rgb(${Math.round(r*a+bg.r*(1-a))},${Math.round(g*a+bg.g*(1-a))},${Math.round(b*a+bg.b*(1-a))})`}
+    function drawDonut(svgId,centerId){const svg=document.getElementById(svgId),centerEl=document.getElementById(centerId);while(svg.firstChild)svg.removeChild(svg.firstChild);const cx=130,cy=130;const inc=income(),spent=totalActual(),rem=inc-spent;centerEl.textContent=`$${Math.max(0,Math.round(rem)).toLocaleString()}`;centerEl.classList.toggle("center-positive",rem>=0);centerEl.classList.toggle("center-negative",rem<0);const bg=document.createElementNS("http://www.w3.org/2000/svg","circle");bg.setAttribute("cx",cx);bg.setAttribute("cy",cy);bg.setAttribute("r",110);bg.setAttribute("fill","none");bg.setAttribute("stroke","var(--ringbg)");bg.setAttribute("stroke-width","30");svg.appendChild(bg);const totalBud=Math.max(1,totalBudget());let angle=0;categories.forEach(c=>{const share=(+c.budget||0)/totalBud;const start=angle*360,end=(angle+share)*360;angle+=share;const outer=document.createElementNS("http://www.w3.org/2000/svg","path");outer.setAttribute("d",ringPath(cx,cy,115,85,start,end));outer.setAttribute("fill",mixColor(c.color,.4));svg.appendChild(outer);const act=actualByCategory(c.id),frac=(+c.budget)?Math.min(act/(+c.budget),1):0;if(frac<=0)return;const inner=document.createElementNS("http://www.w3.org/2000/svg","path");const innerEnd=start+(end-start)*frac;inner.setAttribute("d",ringPath(cx,cy,83,53,start,innerEnd));inner.setAttribute("fill",c.color);svg.appendChild(inner);});}
+    function polarToXY(cx,cy,r,a){a=(a-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)}}
+    function ringPath(cx,cy,rO,rI,s,e){const p1=polarToXY(cx,cy,rO,e),p2=polarToXY(cx,cy,rO,s),p3=polarToXY(cx,cy,rI,s),p4=polarToXY(cx,cy,rI,e),l=e-s<=180?0:1;return`M ${p1.x} ${p1.y} A ${rO} ${rO} 0 ${l} 0 ${p2.x} ${p2.y} L ${p3.x} ${p3.y} A ${rI} ${rI} 0 ${l} 1 ${p4.x} ${p4.y} Z`}
+    function renderDashboardProgress(){const inc=income(),spent=totalActual(),pct=inc>0?Math.min(100,Math.round(spent/inc*100)):0;$("#dash-progress").style.width=pct+"%";$("#dash-progress-label").textContent=`$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`}
+    function showPage(id){["login","dashboard"].forEach(pid=>{const s=document.getElementById(pid);if(!s)return;pid===id?s.classList.remove("hidden"):s.classList.add("hidden")});drawDonut("dash-donut","dash-center");renderDashboardProgress()}
+    $("#login-btn").onclick=()=>{const u=$("#u").value,p=$("#p").value;if(u==="admin"&&p==="1234"){sessionStorage.setItem(STORAGE.login,"1");showPage("dashboard")}else $("#login-err").classList.remove("hidden")}
+    window.addEventListener("DOMContentLoaded",()=>{try{categories=JSON.parse(localStorage.getItem(STORAGE.cats)||"[]");transactions=JSON.parse(localStorage.getItem(STORAGE.tx)||"[]")}catch{}if(sessionStorage.getItem(STORAGE.login)==="1")showPage("dashboard")})
+  </script>
+</body>
+</html>
