@@ -882,17 +882,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   renderAll();
 });
-      }
-
-      // Start page
-      if (sessionStorage.getItem(STORAGE.login)==="1") showPage("dashboard"); else showPage("login");
-      renderAll();
-      const bm = document.getElementById("budget-month");
-if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
-    });
   </script>
 </body>
 </html>
+
 
 
 
