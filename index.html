@@ -159,12 +159,11 @@
       <div class="card">
         <div class="row" style="align-items:baseline;">
         <h2>Overview <span id="budget-month" style="color:#8fd6c3;font-weight:700;"></span></h2>
-          <div class="right">
-            <input id="month-picker" type="month"
-              style="background:#2B3338;border:1px solid var(--line);
-               border-radius:10px;padding:6px 10px;color:#E6F2F0;
-               font-size:13px;min-width:140px;">
-    </div>
+<div class="right" id="month-nav" style="display:flex;align-items:center;gap:8px;">
+  <button id="prev-month" class="btn ghost small" style="padding:4px 8px;">◀</button>
+  <span id="month-display" style="font-weight:700;color:#8fd6c3;">Month Year</span>
+  <button id="next-month" class="btn ghost small" style="padding:4px 8px;">▶</button>
+</div>
   </div>
         <div class="donut-wrap">
           <svg id="budget-donut" width="260" height="260"></svg>
@@ -343,6 +342,37 @@
       const d = new Date();
       return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
     }
+    /************ CUSTOM MONTH PICKER ************/
+function changeMonth(offset) {
+  // offset: -1 for prev, +1 for next
+  const [y, m] = selectedMonth.split("-").map(Number);
+  const newDate = new Date(y, m - 1 + offset, 1);
+  const newYM = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, "0")}`;
+
+  // limit forward navigation
+  if (newYM > getMaxAllowedMonth()) return;
+
+  selectedMonth = newYM;
+  localStorage.setItem(STORAGE.month, selectedMonth);
+
+  // update display
+  updateMonthDisplay();
+  drawDonuts();
+  renderDashboardProgress();
+  renderBudgetProgress();
+  renderCategoryList();
+}
+
+function updateMonthDisplay() {
+  const md = document.getElementById("month-display");
+  const bm = document.getElementById("budget-month");
+  if (md) md.textContent = monthLabel(selectedMonth);
+  if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
+
+  // disable next-month button if future
+  const nextBtn = document.getElementById("next-month");
+  if (nextBtn) nextBtn.disabled = selectedMonth >= getMaxAllowedMonth();
+}
 function getMaxAllowedMonth() {
   const today = new Date();
   const year = today.getFullYear();
@@ -817,39 +847,40 @@ function hideTooltip() {
     }
 
     /************ INIT ************/
-    window.addEventListener("DOMContentLoaded",()=>{
-      load();
-      initLogin();
-      // Income save
-      document.getElementById("save-income").addEventListener("click", ()=>{
-        localStorage.setItem(STORAGE.income, String(Number(document.getElementById("income").value)||0));
-        drawDonuts(); renderDashboardProgress(); renderBudgetProgress();
-      });
-      // Add category
-      document.getElementById("add-cat").addEventListener("click", addCategory);
+window.addEventListener("DOMContentLoaded", () => {
+  load();
+  initLogin();
 
-      // Month picker (Budget)
-      const mp = document.getElementById("month-picker");
-      if(mp){mp.max = getMaxAllowedMonth();
-             
-         // ✅ Automatically update each day at midnight
-  setInterval(() => {
-    mp.max = getMaxAllowedMonth();
-  }, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
-             
-        if(!mp.value){ mp.value = selectedMonth || getCurrentYM(); }
-mp.addEventListener("change", e => {
-  selectedMonth = e.target.value || getCurrentYM();
-  localStorage.setItem(STORAGE.month, selectedMonth);
+  // Income save
+  document.getElementById("save-income").addEventListener("click", () => {
+    localStorage.setItem(STORAGE.income,
+      String(Number(document.getElementById("income").value) || 0));
+    drawDonuts();
+    renderDashboardProgress();
+    renderBudgetProgress();
+  });
 
-  // update the "Overview" month text
-  const bm = document.getElementById("budget-month");
-  if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
+  // Add category
+  document.getElementById("add-cat").addEventListener("click", addCategory);
 
-  drawDonuts();
-  renderDashboardProgress();
-  renderBudgetProgress();
-  renderCategoryList();
+  // 🟢 Remove the old month-picker (<input type="month">) block entirely
+
+  // 🟢 Add this instead:
+  const prev = document.getElementById("prev-month");
+  const next = document.getElementById("next-month");
+  if (prev && next) {
+    prev.addEventListener("click", () => changeMonth(-1));
+    next.addEventListener("click", () => changeMonth(1));
+  }
+  updateMonthDisplay();
+
+  // Start page
+  if (sessionStorage.getItem(STORAGE.login) === "1")
+    showPage("dashboard");
+  else
+    showPage("login");
+
+  renderAll();
 });
       }
 
@@ -862,6 +893,7 @@ if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
   </script>
 </body>
 </html>
+
 
 
 
