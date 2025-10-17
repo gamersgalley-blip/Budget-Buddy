@@ -343,6 +343,24 @@
       const d = new Date();
       return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
     }
+function getMaxAllowedMonth() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth(); // 0-based
+  const day = today.getDate();
+
+  // If it's before the 1st (never happens, but safe) or before next month’s 1st
+  // we only allow up to current month
+  // Once it's the 1st of next month, the new month becomes available
+  const nextMonth = new Date(year, month + 1, 1);
+  if (today < nextMonth) {
+    return `${year}-${String(month + 1).padStart(2, "0")}`;
+  } else {
+    const nextYear = month === 11 ? year + 1 : year;
+    const nextM = (month + 2) % 12 || 12;
+    return `${nextYear}-${String(nextM).padStart(2, "0")}`;
+  }
+}
     function monthLabel(ym){
       if(!ym) return "";
       const [y,m] = ym.split("-").map(Number);
@@ -812,7 +830,13 @@ function hideTooltip() {
 
       // Month picker (Budget)
       const mp = document.getElementById("month-picker");
-      if(mp){
+      if(mp){mp.max = getMaxAllowedMonth();
+             
+         // ✅ Automatically update each day at midnight
+  setInterval(() => {
+    mp.max = getMaxAllowedMonth();
+  }, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
+             
         if(!mp.value){ mp.value = selectedMonth || getCurrentYM(); }
 mp.addEventListener("change", e => {
   selectedMonth = e.target.value || getCurrentYM();
@@ -838,6 +862,7 @@ if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
   </script>
 </body>
 </html>
+
 
 
 
