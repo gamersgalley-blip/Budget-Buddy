@@ -161,7 +161,7 @@
       </div>
 
       <div class="card">
-        <h2>Overview</h2>
+        <h2>Overview <span id="budget-month" style="color:#8fd6c3;font-weight:700;"></span></h2>
         <div class="donut-wrap">
           <svg id="budget-donut" width="260" height="260"></svg>
           <div id="budget-center" class="donut-center">$0</div>
@@ -810,20 +810,31 @@ function hideTooltip() {
       const mp = document.getElementById("month-picker");
       if(mp){
         if(!mp.value){ mp.value = selectedMonth || getCurrentYM(); }
-        mp.addEventListener("change", e=>{
-          selectedMonth = e.target.value || getCurrentYM();
-          localStorage.setItem(STORAGE.month, selectedMonth);
-          drawDonuts(); renderDashboardProgress(); renderBudgetProgress(); renderCategoryList();
-        });
+mp.addEventListener("change", e => {
+  selectedMonth = e.target.value || getCurrentYM();
+  localStorage.setItem(STORAGE.month, selectedMonth);
+
+  // update the "Overview" month text
+  const bm = document.getElementById("budget-month");
+  if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
+
+  drawDonuts();
+  renderDashboardProgress();
+  renderBudgetProgress();
+  renderCategoryList();
+});
       }
 
       // Start page
       if (sessionStorage.getItem(STORAGE.login)==="1") showPage("dashboard"); else showPage("login");
       renderAll();
+      const bm = document.getElementById("budget-month");
+if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
     });
   </script>
 </body>
 </html>
+
 
 
 
