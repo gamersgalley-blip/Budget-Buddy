@@ -141,10 +141,6 @@
   <section id="budget" class="hidden">
     <header>
       <h1>Budget</h1>
-      <div class="row right">
-        <label for="month-picker" style="margin:0;color:var(--muted)">Month</label>
-        <input id="month-picker" type="month" style="background:#2B3338;border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:#E6F2F0;">
-      </div>
     </header>
     <div class="container">
       <div class="card">
@@ -161,7 +157,15 @@
       </div>
 
       <div class="card">
+        <div class="row" style="align-items:baseline;">
         <h2>Overview <span id="budget-month" style="color:#8fd6c3;font-weight:700;"></span></h2>
+          <div class="right">
+            <input id="month-picker" type="month"
+              style="background:#2B3338;border:1px solid var(--line);
+               border-radius:10px;padding:6px 10px;color:#E6F2F0;
+               font-size:13px;min-width:140px;">
+    </div>
+  </div>
         <div class="donut-wrap">
           <svg id="budget-donut" width="260" height="260"></svg>
           <div id="budget-center" class="donut-center">$0</div>
@@ -834,6 +838,7 @@ if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
   </script>
 </body>
 </html>
+
 
 
 
