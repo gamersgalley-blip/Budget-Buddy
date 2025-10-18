@@ -365,8 +365,6 @@
       return `rgb(${rr}, ${gg}, ${bb})`;
     }
     function income(){ return Number(localStorage.getItem(STORAGE.income) || 0); }
-    function setIncome(v){ $("#income").value = v ? Number(v) : ""; }
-
     function ymFromDateStr(d){
       if(!d) return "";
       return d.slice(0,7); // YYYY-MM
@@ -439,7 +437,6 @@ function getMaxAllowedMonth() {
       try{ transactions = JSON.parse(localStorage.getItem(STORAGE.tx) || "[]"); }catch{ transactions=[]; }
       setIncome(localStorage.getItem(STORAGE.income));
       selectedMonth = localStorage.getItem(STORAGE.month) || getCurrentYM();
-      const mp = $("#month-picker"); if(mp) mp.value = selectedMonth;
     }
     function save(){
       localStorage.setItem(STORAGE.cats, JSON.stringify(categories));
@@ -767,7 +764,7 @@ function loadIncomes() {
 
   // Draw each category slice proportional to total income
   categories.forEach(c => {
-    const share = (Number(c.budget) || 0) / safeinc;
+    const share = (Number(c.budget) || 0) / safeInc;
     if (share <= 0) return;
     const start = angle * 360;
     const end = (angle + share) * 360;
@@ -954,6 +951,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
