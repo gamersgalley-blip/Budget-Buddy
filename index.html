@@ -365,7 +365,10 @@
       return `rgb(${rr}, ${gg}, ${bb})`;
     }
     function income(){ return Number(localStorage.getItem(STORAGE.income) || 0); }
-    function setIncome(v){ $("#income").value = v ? Number(v) : ""; }
+    function setIncome(v){
+  const el = document.getElementById("income");
+  if (el) el.value = v ? Number(v) : "";
+}
 
     function ymFromDateStr(d){
       if(!d) return "";
@@ -954,6 +957,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
