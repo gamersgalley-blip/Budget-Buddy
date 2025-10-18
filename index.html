@@ -619,13 +619,31 @@ function clearError(el) {
         const actions = document.createElement("div"); actions.className="cat-actions";
         
         // Category dropdown
-        const sel = document.createElement("select");
-        const optNone = document.createElement("option"); optNone.value=""; optNone.textContent="Uncategorized"; sel.appendChild(optNone);
-        categories.forEach(c=>{
-          const o=document.createElement("option"); o.value=c.id; o.textContent=c.name; sel.appendChild(o);
-        });
-        sel.value = t.categoryId || "";
-        sel.onchange = e => setTxCategory(t.id, e.target.value || null);
+const sel = document.createElement("select");
+
+// Add "Uncategorized" option
+const optNone = document.createElement("option");
+optNone.value = "";
+optNone.textContent = "Uncategorized";
+sel.appendChild(optNone);
+
+// Add "Income (Deposit)" option
+const optIncome = document.createElement("option");
+optIncome.value = "income";
+optIncome.textContent = "Income (Deposit)";
+sel.appendChild(optIncome);
+
+// Add user-created categories
+categories.forEach(c => {
+  const o = document.createElement("option");
+  o.value = c.id;
+  o.textContent = c.name;
+  sel.appendChild(o);
+});
+
+// Set selected value
+sel.value = t.categoryId || "";
+sel.onchange = e => setTxCategory(t.id, e.target.value || null);
 
         const del = document.createElement("button"); del.className="btn ghost small"; del.textContent="🗑️ Delete"; del.onclick=()=>deleteTx(t.id);
 
@@ -1097,6 +1115,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
