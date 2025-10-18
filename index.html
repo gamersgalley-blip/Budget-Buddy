@@ -978,26 +978,36 @@ function renderBudgetProgress(){
     lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
   }
 }
-   function renderIncomeProgress() {
+function renderIncomeProgress() {
   const target = income(); // planned income total
   const received = totalReceivedIncome(selectedMonth); // actual deposits
-  const pct = target > 0 ? Math.min(100, Math.round((received / target) * 100)) : 0;
 
   const bar = document.getElementById("income-progress");
   const lbl = document.getElementById("income-progress-label");
 
+  // 🟢 Handle case when no total income is set
+  if (target <= 0) {
+    if (bar) {
+      bar.style.width = "0%";
+      bar.style.background = "var(--mint)";
+      bar.style.opacity = "0.35"; // subtle dim until income set
+    }
+    if (lbl) lbl.textContent = `Set your monthly income to track progress`;
+    return;
+  }
+
+  const pct = Math.min(100, Math.round((received / target) * 100));
+
   if (bar) {
     bar.style.width = pct + "%";
-    // Smooth gradient color
-    if (pct < 50) bar.style.background = "#FF6B6B"; // red
-    else if (pct < 100) bar.style.background = "#FBBF24"; // gold
-    else bar.style.background = "var(--mint)"; // mint when complete
+    bar.style.background = "var(--mint)"; // ✅ always mint green
+    bar.style.opacity = "1";
   }
 
   if (lbl) {
     lbl.textContent = `${pct}% of income received ($${received.toLocaleString()} / $${target.toLocaleString()})`;
   }
-} 
+}
 /************ TOOLTIP (Hover Info) ************/
 function showSliceTooltip(evt, cat, inc, ym) {
   const tip = document.getElementById("tooltip");
@@ -1082,6 +1092,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
