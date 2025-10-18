@@ -156,20 +156,28 @@
     <header>
       <h1>Budget</h1>
     </header>
-    <div class="container">
-      <div class="card">
-<h2>Monthly Income</h2>
-<div class="row">
-  <div style="flex:1;min-width:180px;">
-    <label>Total Income</label>
-    <div id="income-total" style="font-weight:700;font-size:16px;color:var(--mint);">$0</div>
-  </div>
-  <div class="right">
-    <button class="btn primary" id="add-income-btn">+ Add Income</button>
-    <button class="btn ghost right" onclick="openEditIncomeModal()">Edit Income →</button>
-</div>
+<div class="container">
+  <div class="card">
+    <h2>Monthly Income</h2>
+    <div class="row">
+      <div style="flex:1;min-width:180px;">
+        <label>Total Income</label>
+        <div id="income-total" style="font-weight:700;font-size:16px;color:var(--mint);">$0</div>
       </div>
+      <div class="right">
+        <button class="btn primary" id="add-income-btn">+ Add Income</button>
+        <button class="btn ghost right" onclick="openEditIncomeModal()">Edit Income →</button>
       </div>
+    </div> <!-- ✅ closes .row -->
+
+    <!-- 🟢 Income Received Progress Bar -->
+    <div class="progress-wrap" style="margin-top:12px;">
+      <div id="income-progress" class="progress-fill" style="width:0%;background:#60A5FA;"></div>
+    </div>
+    <div id="income-progress-label" class="progress-label">0% of income received</div>
+
+  </div> <!-- ✅ closes .card -->
+</div> <!-- ✅ closes .container -->
 
       <div class="card">
         <div class="row" style="align-items:baseline;">
@@ -464,6 +472,11 @@ function getMaxAllowedMonth() {
     function totalActual(ym){
       return categories.reduce((s,c)=>s+actualByCategory(c.id, ym), 0);
     }
+    function totalReceivedIncome(ym) {
+  return txForMonth(ym)
+    .filter(t => t.categoryId === "income")
+    .reduce((s, t) => s + (Number(t.amount) || 0), 0);
+}
     function totalBudget(){ return categories.reduce((s,c)=>s+(Number(c.budget)||0),0); }
     function remaining(ym){ return income() - totalActual(ym); }
 
@@ -664,13 +677,33 @@ function loadIncomes() {
     incomes = [];
   }
   renderTotalIncome();
+  renderIncomeProgress();
 }
-    function populateTxCategoryDropdown(){
-      const sel = $("#tx-category");
-      if(!sel) return;
-      sel.innerHTML="";
-      const optNone = document.createElement("option"); optNone.value=""; optNone.textContent="Uncategorized"; sel.appendChild(optNone);
-      categories.forEach(c=>{ const o=document.createElement("option"); o.value=c.id; o.textContent=c.name; sel.appendChild(o); });
+function populateTxCategoryDropdown(){
+  const sel = $("#tx-category");
+  if(!sel) return;
+  sel.innerHTML = "";
+
+  // Default Uncategorized option
+  const optNone = document.createElement("option");
+  optNone.value = "";
+  optNone.textContent = "Uncategorized";
+  sel.appendChild(optNone);
+
+  // 🟢 Built-in Income option
+  const optIncome = document.createElement("option");
+  optIncome.value = "income"; // special keyword
+  optIncome.textContent = "Income (Deposit)";
+  sel.appendChild(optIncome);
+
+  // Add user-created categories
+  categories.forEach(c => {
+    const o = document.createElement("option");
+    o.value = c.id;
+    o.textContent = c.name;
+    sel.appendChild(o);
+  });
+}
     }
     function openEditIncomeModal() {
   const modal = document.getElementById("edit-income-modal");
@@ -947,7 +980,26 @@ function renderBudgetProgress(){
     lbl.textContent = `$${spent.toLocaleString()} / $${inc.toLocaleString()} spent`;
   }
 }
-    
+   function renderIncomeProgress() {
+  const target = income(); // planned income total
+  const received = totalReceivedIncome(selectedMonth); // actual deposits
+  const pct = target > 0 ? Math.min(100, Math.round((received / target) * 100)) : 0;
+
+  const bar = document.getElementById("income-progress");
+  const lbl = document.getElementById("income-progress-label");
+
+  if (bar) {
+    bar.style.width = pct + "%";
+    // Smooth gradient color
+    if (pct < 50) bar.style.background = "#FF6B6B"; // red
+    else if (pct < 100) bar.style.background = "#FBBF24"; // gold
+    else bar.style.background = "var(--mint)"; // mint when complete
+  }
+
+  if (lbl) {
+    lbl.textContent = `${pct}% of income received ($${received.toLocaleString()} / $${target.toLocaleString()})`;
+  }
+} 
 /************ TOOLTIP (Hover Info) ************/
 function showSliceTooltip(evt, cat, inc, ym) {
   const tip = document.getElementById("tooltip");
@@ -996,6 +1048,7 @@ function hideTooltip() {
       drawDonuts();
       renderDashboardProgress();
       renderBudgetProgress();
+      renderIncomeProgress();
     }
 
     /************ INIT ************/
@@ -1031,6 +1084,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
