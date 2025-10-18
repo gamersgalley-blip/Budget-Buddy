@@ -361,6 +361,7 @@
       tx: "saavr_v3_4_transactions",
       month: "saavr_v3_4_month"
     };
+    const INCOME_COLOR = "#50C3A3"; // Mint green for deposits
 
     /************ STATE ************/
     let categories = []; // {id,name,budget,color}
@@ -604,13 +605,37 @@ function clearError(el) {
       transactions.forEach(t=>{
         const row = document.createElement("div");
         row.className = "cat-item";
-        const cat = categories.find(c=>c.id===t.categoryId);
-        const color = cat ? cat.color : "#3c464c";
-        const sw = document.createElement("div"); sw.className="swatch"; sw.style.background=color;
-        const mid = document.createElement("div");
-        const nm = document.createElement("div"); nm.className="cat-name"; nm.textContent=t.name;
-        const details = document.createElement("div"); details.style.color="var(--muted)"; details.style.fontSize="12px";
-        const catLabel = cat ? `Category: ${cat.name}` : "Uncategorized";
+       let catLabel = "Uncategorized";
+let color = "#3c464c";
+
+// 🟢 Handle built-in Income
+if (t.categoryId === "income") {
+  catLabel = "Income (Deposit)";
+  color = INCOME_COLOR;
+} else {
+  const cat = categories.find(c => c.id === t.categoryId);
+  if (cat) {
+    catLabel = `Category: ${cat.name}`;
+    color = cat.color;
+  }
+}
+
+const sw = document.createElement("div");
+sw.className = "swatch";
+sw.style.background = color;
+
+const mid = document.createElement("div");
+const nm = document.createElement("div");
+nm.className = "cat-name";
+nm.textContent = t.name;
+
+const details = document.createElement("div");
+details.style.color = "var(--muted)";
+details.style.fontSize = "12px";
+const dateLabel = t.date ? ` • ${formatLongDate(t.date)}` : "";
+details.textContent = `${catLabel}${dateLabel}`;
+mid.appendChild(nm);
+mid.appendChild(details);
         const dateLabel = t.date ? ` • ${formatLongDate(t.date)}` : "";
         details.textContent = catLabel + dateLabel;
         mid.appendChild(nm); mid.appendChild(details);
@@ -1115,6 +1140,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
