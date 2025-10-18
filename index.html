@@ -18,7 +18,21 @@
     *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;}
     body{background:var(--dark);color:#E9F2F0;min-height:100vh;display:flex;flex-direction:column;}
     .hidden{display:none!important;}
+/* Keep month navigation arrows fixed and centered */
+#month-nav {
+  justify-content: center;
+}
 
+#month-display {
+  display: inline-block;
+  min-width: 140px;   /* Adjust for longer month names */
+  text-align: center;
+}
+ #month-nav button:disabled {
+  opacity: 0.4;            /* faint look */
+  cursor: not-allowed;     /* shows it's inactive */
+  filter: grayscale(100%);
+}
     header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#222A2F;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
     header h1{color:var(--mint);font-size:18px;letter-spacing:.3px;}
     .container{flex:1;overflow:auto;padding:14px 16px 84px;}
@@ -885,6 +899,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
 
 
 
