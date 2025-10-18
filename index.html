@@ -450,15 +450,39 @@ function getMaxAllowedMonth() {
     function totalBudget(){ return categories.reduce((s,c)=>s+(Number(c.budget)||0),0); }
     function remaining(ym){ return income() - totalActual(ym); }
 
-    /************ LOGIN & NAV ************/
-    function initLogin(){
-      if (sessionStorage.getItem(STORAGE.login)==="1"){ $("#login").classList.add("hidden"); $("#dashboard").classList.remove("hidden"); }
-      $("#login-btn").addEventListener("click",()=>{
-        const u=$("#u").value.trim(), p=$("#p").value.trim();
-        if(u==="admin" && p==="1234"){ sessionStorage.setItem(STORAGE.login,"1"); showPage("dashboard"); $("#login-err").classList.add("hidden"); }
-        else $("#login-err").classList.remove("hidden");
-      });
-    }
+/************ LOGIN & NAV ************/
+function initLogin() {
+  const loginSection = document.getElementById("login");
+  const dashSection = document.getElementById("dashboard");
+  const loginBtn = document.getElementById("login-btn");
+  const err = document.getElementById("login-err");
+
+  // Clear any hidden states first
+  if (loginSection) loginSection.classList.remove("hidden");
+  if (dashSection) dashSection.classList.add("hidden");
+
+  // If already logged in, skip to dashboard
+  if (sessionStorage.getItem(STORAGE.login) === "1") {
+    showPage("dashboard");
+    return;
+  }
+
+  // Add listener for login button
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      const u = document.getElementById("u").value.trim();
+      const p = document.getElementById("p").value.trim();
+
+      if (u === "admin" && p === "1234") {
+        sessionStorage.setItem(STORAGE.login, "1");
+        if (err) err.classList.add("hidden");
+        showPage("dashboard");
+      } else {
+        if (err) err.classList.remove("hidden");
+      }
+    });
+  }
+}
     function showPage(id){
       ["login","dashboard","budget","accounts"].forEach(pid=>{
         const s=document.getElementById(pid);
@@ -868,17 +892,16 @@ function hideTooltip() {
       renderBudgetProgress();
     }
 
-    /************ INIT ************/
+/************ INIT ************/
 window.addEventListener("DOMContentLoaded", () => {
   load();
   initLogin();
 
   // Add category
-  document.getElementById("add-cat").addEventListener("click", addCategory);
+  const addCatBtn = document.getElementById("add-cat");
+  if (addCatBtn) addCatBtn.addEventListener("click", addCategory);
 
-  // 🟢 Remove the old month-picker (<input type="month">) block entirely
-
-  // 🟢 Add this instead:
+  // Month navigation
   const prev = document.getElementById("prev-month");
   const next = document.getElementById("next-month");
   if (prev && next) {
@@ -887,17 +910,19 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   updateMonthDisplay();
 
-  // Start page
-  if (sessionStorage.getItem(STORAGE.login) === "1")
+  // Determine which page to show
+  if (sessionStorage.getItem(STORAGE.login) === "1") {
     showPage("dashboard");
-  else
+  } else {
     showPage("login");
+  }
 
   renderAll();
 });
   </script>
 </body>
 </html>
+
 
 
 
