@@ -873,15 +873,6 @@ window.addEventListener("DOMContentLoaded", () => {
   load();
   initLogin();
 
-  // Income save
-  document.getElementById("save-income").addEventListener("click", () => {
-    localStorage.setItem(STORAGE.income,
-      String(Number(document.getElementById("income").value) || 0));
-    drawDonuts();
-    renderDashboardProgress();
-    renderBudgetProgress();
-  });
-
   // Add category
   document.getElementById("add-cat").addEventListener("click", addCategory);
 
@@ -907,6 +898,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
 
 
 
