@@ -632,10 +632,6 @@ nm.textContent = t.name;
 const details = document.createElement("div");
 details.style.color = "var(--muted)";
 details.style.fontSize = "12px";
-const dateLabel = t.date ? ` • ${formatLongDate(t.date)}` : "";
-details.textContent = `${catLabel}${dateLabel}`;
-mid.appendChild(nm);
-mid.appendChild(details);
         const dateLabel = t.date ? ` • ${formatLongDate(t.date)}` : "";
         details.textContent = catLabel + dateLabel;
         mid.appendChild(nm); mid.appendChild(details);
@@ -1140,6 +1136,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
