@@ -166,8 +166,7 @@
   </div>
   <div class="right">
     <button class="btn primary" id="add-income-btn">+ Add Income</button>
-    <button class="btn ghost right" onclick="showPage('accounts')">Edit Income →</button>
-  </div>
+    <button class="btn ghost right" onclick="openEditIncomeModal()">Edit Income →</button>
 </div>
       </div>
 
@@ -320,6 +319,16 @@
     <div class="row" style="justify-content:flex-end;margin-top:10px;">
       <button class="btn ghost" onclick="closeIncomeModal()">Cancel</button>
       <button class="btn primary" onclick="saveIncome()">Add</button>
+    </div>
+  </div>
+</div>
+  <!-- EDIT INCOME MODAL -->
+<div id="edit-income-modal" class="backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Edit or Delete Income Sources</h3>
+    <div id="income-list" style="margin-top:10px;"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px;">
+      <button class="btn ghost" onclick="closeEditIncomeModal()">Close</button>
     </div>
   </div>
 </div>
@@ -662,6 +671,76 @@ function loadIncomes() {
       const optNone = document.createElement("option"); optNone.value=""; optNone.textContent="Uncategorized"; sel.appendChild(optNone);
       categories.forEach(c=>{ const o=document.createElement("option"); o.value=c.id; o.textContent=c.name; sel.appendChild(o); });
     }
+    function openEditIncomeModal() {
+  const modal = document.getElementById("edit-income-modal");
+  const list = document.getElementById("income-list");
+  list.innerHTML = "";
+
+  if (incomes.length === 0) {
+    list.innerHTML = `<p style="color:var(--muted);text-align:center;">No income sources yet.</p>`;
+  } else {
+    incomes.forEach((inc) => {
+      const row = document.createElement("div");
+      row.className = "cat-item";
+
+      const mid = document.createElement("div");
+      mid.innerHTML = `<div class="cat-name">${inc.name}</div>
+                       <div style="color:var(--muted);font-size:12px;">$${Number(inc.amount).toLocaleString()}</div>`;
+
+      const right = document.createElement("div");
+      right.className = "cat-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn ghost small";
+      editBtn.textContent = "✏️ Edit";
+      editBtn.onclick = () => editIncomeSource(inc.id);
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn ghost small";
+      delBtn.textContent = "🗑️ Delete";
+      delBtn.onclick = () => deleteIncomeSource(inc.id);
+
+      right.appendChild(editBtn);
+      right.appendChild(delBtn);
+
+      row.appendChild(mid);
+      row.appendChild(right);
+      list.appendChild(row);
+    });
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeEditIncomeModal() {
+  document.getElementById("edit-income-modal").classList.add("hidden");
+}
+
+function editIncomeSource(id) {
+  const inc = incomes.find(i => i.id === id);
+  if (!inc) return;
+
+  const newName = prompt("Edit income name:", inc.name);
+  if (newName === null) return;
+
+  const newAmt = Number(prompt("Edit income amount ($):", inc.amount));
+  if (!(newAmt > 0)) return alert("Amount must be positive.");
+
+  inc.name = newName.trim();
+  inc.amount = newAmt;
+
+  localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
+  renderTotalIncome();
+  openEditIncomeModal(); // refresh list
+}
+
+function deleteIncomeSource(id) {
+  if (!confirm("Delete this income source?")) return;
+
+  incomes = incomes.filter(i => i.id !== id);
+  localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
+  renderTotalIncome();
+  openEditIncomeModal(); // refresh list
 
     /************ RENDER CATEGORY LIST (Budget) ************/
     function renderCategoryList(){
@@ -951,6 +1030,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
