@@ -583,6 +583,7 @@ function clearError(el) {
       transactions.push({ id: uid(), name, amount: amt, categoryId: cat || null, date: d });
       closeTxModal();
       save();
+      renderIncomeProgress();
     }
     function setTxCategory(txId, catId){
       transactions = transactions.map(t => t.id===txId ? {...t, categoryId: catId || null} : t);
@@ -658,6 +659,7 @@ function saveIncome() {
   localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
   closeIncomeModal();
   renderTotalIncome();
+  renderIncomeProgress();
 }
 
 function renderTotalIncome() {
@@ -763,6 +765,7 @@ function editIncomeSource(id) {
 
   localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
   renderTotalIncome();
+  renderIncomeProgress();
   openEditIncomeModal(); // refresh list
 }
 
@@ -772,6 +775,7 @@ function deleteIncomeSource(id) {
   incomes = incomes.filter(i => i.id !== id);
   localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
   renderTotalIncome();
+  renderIncomeProgress();
   openEditIncomeModal(); // refresh list
 }
     /************ RENDER CATEGORY LIST (Budget) ************/
@@ -1092,6 +1096,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
