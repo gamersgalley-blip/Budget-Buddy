@@ -156,19 +156,24 @@
     <header>
       <h1>Budget</h1>
     </header>
-    <div class="container">
-      <div class="card">
-        <h2>Monthly Income</h2>
-        <div class="row">
-          <div style="flex:1;min-width:180px;">
-            <label for="income">Income ($)</label>
-            <input id="income" type="number" min="0" step="1" placeholder="0" />
-          </div>
-          <div class="right" style="align-self:flex-end;">
-            <button class="btn primary" id="save-income">Save</button>
-          </div>
-        </div>
+<div class="container">
+  <div class="card">
+    <div class="row" style="align-items:baseline;">
+      <h2>Monthly Income</h2>
+      <button class="btn ghost right" id="edit-income">Edit Income Sources →</button>
+    </div>
+
+    <div class="row" style="margin-top:8px;">
+      <div style="flex:1;min-width:180px;">
+        <label for="income">Total Income</label>
+        <input id="income" type="number" min="0" step="1" placeholder="0" />
       </div>
+      <div class="right" style="align-self:flex-end;">
+        <button class="btn primary" id="add-income">+ Add Income</button>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div class="card">
         <div class="row" style="align-items:baseline;">
@@ -898,6 +903,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
 
 
 
