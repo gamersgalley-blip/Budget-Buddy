@@ -93,6 +93,72 @@
   border-radius: 50%;
   box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
 }
+    /* ⚙️ Settings Dropdown */
+.settings-container {
+  position: relative;
+}
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.settings-btn:hover {
+  color: var(--mint);
+}
+.settings-btn:active {
+  transform: scale(0.9);
+  color: var(--mint);
+}    
+.dropdown {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  background: #232A2E;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  padding: 10px 0;
+  width: 240px;
+  z-index: 30;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.dropdown-section {
+  padding: 10px 14px;
+}
+
+.dropdown-section h4 {
+  font-size: 13px;
+  color: var(--mint);
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+
+.dropdown-section p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .right{margin-left:auto;}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;}
@@ -170,7 +236,36 @@
 
   <!-- DASHBOARD -->
 <section id="dashboard" class="hidden">
-  <header><h1>Dashboard</h1><div>⚙️</div></header>
+<header>
+  <h1>Dashboard</h1>
+  <div class="settings-container">
+    <button id="settings-btn" class="settings-btn">⚙️</button>
+    <div id="settings-dropdown" class="dropdown hidden">
+      <div class="dropdown-section">
+        <h4>Appearance</h4>
+        <p>Theme</p>
+      </div>
+      <div class="divider"></div>
+
+      <div class="dropdown-section">
+        <h4>Account & Profile</h4>
+        <p>Manage your display name, avatar, and privacy settings</p>
+      </div>
+      <div class="divider"></div>
+
+      <div class="dropdown-section">
+        <h4>Notifications</h4>
+        <p>Budget summaries, XP updates, and alerts</p>
+      </div>
+      <div class="divider"></div>
+
+      <div class="dropdown-section">
+        <h4>Support</h4>
+        <p>Contact support or send feedback</p>
+      </div>
+    </div>
+  </div>
+</header>
   <div class="container">
     <!-- 🟢 XP / Level Card -->
     <div class="card" id="xp-card">
@@ -1206,11 +1301,30 @@ function renderXP() {
       renderIncomeProgress();
       renderXP();
     }
+/************ SETTINGS DROPDOWN ************/
+function initSettingsDropdown() {
+  const btn = document.getElementById("settings-btn");
+  const menu = document.getElementById("settings-dropdown");
 
+  if (!btn || !menu) return;
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("hidden");
+  });
+
+  // close when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!menu.contains(e.target) && e.target !== btn) {
+      menu.classList.add("hidden");
+    }
+  });
+}
     /************ INIT ************/
 window.addEventListener("DOMContentLoaded", () => {
   load();
   initLogin();
+  initSettingsDropdown();
 
   // Income save
 document.getElementById("add-income-btn").addEventListener("click", openIncomeModal);
@@ -1240,6 +1354,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
