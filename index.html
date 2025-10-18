@@ -172,7 +172,7 @@
 
       <div class="card">
         <div class="row" style="align-items:baseline;">
-        <h2>Overview <span id="budget-month" style="color:#8fd6c3;font-weight:700;"></span></h2>
+        <h2>Overview</h2>
 <div class="right" id="month-nav" style="display:flex;align-items:center;gap:8px;">
   <button id="prev-month" class="btn ghost small" style="padding:4px 8px;">◀</button>
   <span id="month-display" style="font-weight:700;color:#8fd6c3;">Month Year</span>
@@ -379,9 +379,7 @@ function changeMonth(offset) {
 
 function updateMonthDisplay() {
   const md = document.getElementById("month-display");
-  const bm = document.getElementById("budget-month");
   if (md) md.textContent = monthLabel(selectedMonth);
-  if (bm) bm.textContent = " — " + monthLabel(selectedMonth);
 
   // disable next-month button if future
   const nextBtn = document.getElementById("next-month");
@@ -899,6 +897,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
 
 
 
