@@ -597,7 +597,25 @@ function clearError(el) {
         const amt = document.createElement("div"); amt.className="cat-amount"; amt.textContent = `$${(t.amount||0).toLocaleString()}`;
         const actions = document.createElement("div"); actions.className="cat-actions";
         
-/************ INCOME (Multiple Sources) ************/
+        // Category dropdown
+        const sel = document.createElement("select");
+        const optNone = document.createElement("option"); optNone.value=""; optNone.textContent="Uncategorized"; sel.appendChild(optNone);
+        categories.forEach(c=>{
+          const o=document.createElement("option"); o.value=c.id; o.textContent=c.name; sel.appendChild(o);
+        });
+        sel.value = t.categoryId || "";
+        sel.onchange = e => setTxCategory(t.id, e.target.value || null);
+
+        const del = document.createElement("button"); del.className="btn ghost small"; del.textContent="🗑️ Delete"; del.onclick=()=>deleteTx(t.id);
+
+        actions.appendChild(sel); actions.appendChild(del);
+        right.appendChild(amt); right.appendChild(actions);
+
+        row.appendChild(sw); row.appendChild(mid); row.appendChild(right);
+        list.appendChild(row);
+      });
+    }
+    /************ INCOME (Multiple Sources) ************/
 let incomes = []; // {id,name,amount}
 
 function openIncomeModal() {
@@ -640,24 +658,6 @@ function loadIncomes() {
   }
   renderTotalIncome();
 }
-        // Category dropdown
-        const sel = document.createElement("select");
-        const optNone = document.createElement("option"); optNone.value=""; optNone.textContent="Uncategorized"; sel.appendChild(optNone);
-        categories.forEach(c=>{
-          const o=document.createElement("option"); o.value=c.id; o.textContent=c.name; sel.appendChild(o);
-        });
-        sel.value = t.categoryId || "";
-        sel.onchange = e => setTxCategory(t.id, e.target.value || null);
-
-        const del = document.createElement("button"); del.className="btn ghost small"; del.textContent="🗑️ Delete"; del.onclick=()=>deleteTx(t.id);
-
-        actions.appendChild(sel); actions.appendChild(del);
-        right.appendChild(amt); right.appendChild(actions);
-
-        row.appendChild(sw); row.appendChild(mid); row.appendChild(right);
-        list.appendChild(row);
-      });
-    }
     function populateTxCategoryDropdown(){
       const sel = $("#tx-category");
       if(!sel) return;
@@ -927,13 +927,6 @@ window.addEventListener("DOMContentLoaded", () => {
   initLogin();
 
   // Income save
-  document.getElementById("save-income").addEventListener("click", () => {
-    localStorage.setItem(STORAGE.income,
-      String(Number(document.getElementById("income").value) || 0));
-    drawDonuts();
-    renderDashboardProgress();
-    renderBudgetProgress();
-  });
 document.getElementById("add-income-btn").addEventListener("click", openIncomeModal);
 loadIncomes();
   // Add category
@@ -961,6 +954,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
