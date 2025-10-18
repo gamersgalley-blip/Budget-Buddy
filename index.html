@@ -452,11 +452,14 @@ function getMaxAllowedMonth() {
       return d.toLocaleString(undefined,{ month:"short", day:"numeric", year:"numeric"});
     }
 
-    function load(){
-      try{ categories = JSON.parse(localStorage.getItem(STORAGE.cats) || "[]"); }catch{ categories=[]; }
-      try{ transactions = JSON.parse(localStorage.getItem(STORAGE.tx) || "[]"); }catch{ transactions=[]; }
-      selectedMonth = localStorage.getItem(STORAGE.month) || getCurrentYM();
-    }
+function load(){
+  try { categories = JSON.parse(localStorage.getItem(STORAGE.cats) || "[]"); } catch { categories = []; }
+  try { transactions = JSON.parse(localStorage.getItem(STORAGE.tx) || "[]"); } catch { transactions = []; }
+
+  // 🟢 Always reset to current month on load
+  selectedMonth = getCurrentYM();
+  localStorage.setItem(STORAGE.month, selectedMonth);
+}
     function save(){
       localStorage.setItem(STORAGE.cats, JSON.stringify(categories));
       localStorage.setItem(STORAGE.tx, JSON.stringify(transactions));
@@ -504,6 +507,13 @@ function getMaxAllowedMonth() {
       // render current month label on dashboard
       const dm = $("#dash-month");
       if(dm){ dm.textContent = " — " + monthLabel(selectedMonth); }
+        // 🟢 When returning to Budget, reset to current month
+  if (id === "budget") {
+    selectedMonth = getCurrentYM();
+    localStorage.setItem(STORAGE.month, selectedMonth);
+    updateMonthDisplay();
+    renderIncomeProgress();
+  }
       drawDonuts();
       renderDashboardProgress();
       renderBudgetProgress();
@@ -1136,6 +1146,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
