@@ -681,7 +681,8 @@ function clearError(el) {
   while(svg.firstChild) svg.removeChild(svg.firstChild);
 
   const cx = 130, cy = 130, r = 100, stroke = 30;
-  const inc = income() || 1; // avoid divide-by-zero
+  let inc = income();
+  const safeInc = inc > 0 ? inc : 1; // use for drawing math
   const spent = totalActual(ym);
   const rem = inc - spent;
 
@@ -704,7 +705,7 @@ function clearError(el) {
 
   // Draw each category slice proportional to total income
   categories.forEach(c => {
-    const share = (Number(c.budget) || 0) / inc;
+    const share = (Number(c.budget) || 0) / safeinc;
     if (share <= 0) return;
     const start = angle * 360;
     const end = (angle + share) * 360;
@@ -897,6 +898,7 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
 
 
 
