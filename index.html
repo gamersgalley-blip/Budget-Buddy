@@ -157,17 +157,19 @@
       <h1>Budget</h1>
     </header>
     <div class="container">
-      <div class="card">
-        <h2>Monthly Income</h2>
-        <div class="row">
-          <div style="flex:1;min-width:180px;">
-            <label for="income">Income ($)</label>
-            <input id="income" type="number" min="0" step="1" placeholder="0" />
-          </div>
-          <div class="right" style="align-self:flex-end;">
-            <button class="btn primary" id="save-income">Save</button>
-          </div>
-        </div>
+<div class="card">
+  <h2>Monthly Income</h2>
+  <div class="row">
+    <div style="flex:1;min-width:180px;">
+      <label>Total Income</label>
+      <div id="income-total" style="font-weight:700;font-size:16px;color:var(--mint);">$0</div>
+    </div>
+    <div class="right" style="display:flex;gap:8px;">
+      <button class="btn primary" id="add-income-btn">+ Add Income</button>
+      <button class="btn ghost" id="manage-income-btn">⚙️ Edit Income Sources</button>
+    </div>
+  </div>
+</div>
       </div>
 
       <div class="card">
@@ -302,7 +304,36 @@
       </div>
     </div>
   </div>
-
+<!-- ADD INCOME MODAL -->
+<div id="income-modal" class="backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Add Income Source</h3>
+    <div class="row">
+      <div style="flex:2;min-width:200px;">
+        <label for="income-name">Name</label>
+        <input id="income-name" type="text" placeholder="e.g., Main Job, Side Gig">
+      </div>
+      <div style="flex:1;min-width:140px;">
+        <label for="income-amount">Amount ($)</label>
+        <input id="income-amount" type="number" min="0" step="1" placeholder="0">
+      </div>
+    </div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px;">
+      <button class="btn ghost" onclick="closeIncomeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveIncome()">Add</button>
+    </div>
+  </div>
+</div>
+  <!-- MANAGE INCOME SOURCES MODAL -->
+<div id="income-manage-modal" class="backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Manage Income Sources</h3>
+    <div id="manage-income-list" style="margin-top:8px;"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px;">
+      <button class="btn ghost" onclick="closeManageIncomeModal()">Close</button>
+    </div>
+  </div>
+</div>
   <script>
     /************ PRESETS ************/
     const PRESETS = [
@@ -346,8 +377,6 @@
       return `rgb(${rr}, ${gg}, ${bb})`;
     }
     function income(){ return Number(localStorage.getItem(STORAGE.income) || 0); }
-    function setIncome(v){ $("#income").value = v ? Number(v) : ""; }
-
     function ymFromDateStr(d){
       if(!d) return "";
       return d.slice(0,7); // YYYY-MM
@@ -418,9 +447,7 @@ function getMaxAllowedMonth() {
     function load(){
       try{ categories = JSON.parse(localStorage.getItem(STORAGE.cats) || "[]"); }catch{ categories=[]; }
       try{ transactions = JSON.parse(localStorage.getItem(STORAGE.tx) || "[]"); }catch{ transactions=[]; }
-      setIncome(localStorage.getItem(STORAGE.income));
       selectedMonth = localStorage.getItem(STORAGE.month) || getCurrentYM();
-      const mp = $("#month-picker"); if(mp) mp.value = selectedMonth;
     }
     function save(){
       localStorage.setItem(STORAGE.cats, JSON.stringify(categories));
@@ -577,7 +604,7 @@ function clearError(el) {
         const right = document.createElement("div");
         const amt = document.createElement("div"); amt.className="cat-amount"; amt.textContent = `$${(t.amount||0).toLocaleString()}`;
         const actions = document.createElement("div"); actions.className="cat-actions";
-
+        
         // Category dropdown
         const sel = document.createElement("select");
         const optNone = document.createElement("option"); optNone.value=""; optNone.textContent="Uncategorized"; sel.appendChild(optNone);
@@ -596,6 +623,99 @@ function clearError(el) {
         list.appendChild(row);
       });
     }
+    /************ INCOME (Multiple Sources) ************/
+let incomes = []; // {id,name,amount}
+
+function openIncomeModal() {
+  document.getElementById("income-name").value = "";
+  document.getElementById("income-amount").value = "";
+  document.getElementById("income-modal").classList.remove("hidden");
+}
+
+function closeIncomeModal() {
+  document.getElementById("income-modal").classList.add("hidden");
+}
+
+function saveIncome() {
+  const name = document.getElementById("income-name").value.trim();
+  const amt = Number(document.getElementById("income-amount").value);
+  if (!name || !(amt > 0)) {
+    alert("Enter a name and positive amount.");
+    return;
+  }
+  incomes.push({ id: uid(), name, amount: amt });
+  localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
+  closeIncomeModal();
+  renderTotalIncome();
+}
+
+function renderTotalIncome() {
+  const total = incomes.reduce((sum, inc) => sum + (Number(inc.amount) || 0), 0);
+  document.getElementById("income-total").textContent = `$${total.toLocaleString()}`;
+  localStorage.setItem(STORAGE.income, total); // keep dashboard logic compatible
+  drawDonuts();
+  renderDashboardProgress();
+  renderBudgetProgress();
+}
+
+function loadIncomes() {
+  try {
+    incomes = JSON.parse(localStorage.getItem("saavr_v3_4_incomes") || "[]");
+  } catch {
+    incomes = [];
+  } 
+  renderTotalIncome();
+}
+/************ MANAGE INCOME SOURCES ************/
+function openManageIncomeModal() {
+  const modal = document.getElementById("income-manage-modal");
+  const list = document.getElementById("manage-income-list");
+  list.innerHTML = "";
+
+  if (!incomes.length) {
+    list.innerHTML = `<p style="color:var(--muted);">No income sources yet.</p>`;
+  } else {
+    incomes.forEach(i => {
+      const row = document.createElement("div");
+      row.className = "cat-item";
+      row.innerHTML = `
+        <div class="cat-name">${i.name}</div>
+        <div class="cat-amount">$${i.amount.toLocaleString()}</div>
+        <div class="cat-actions">
+          <button class="btn ghost small" onclick="editIncome('${i.id}')">✏️ Edit</button>
+          <button class="btn ghost small" onclick="deleteIncome('${i.id}')">🗑️ Delete</button>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+  }
+  modal.classList.remove("hidden");
+}
+
+function closeManageIncomeModal() {
+  document.getElementById("income-manage-modal").classList.add("hidden");
+}
+
+// helper edit/delete for income items
+function editIncome(id) {
+  const inc = incomes.find(x => x.id === id);
+  if (!inc) return;
+  document.getElementById("income-name").value = inc.name;
+  document.getElementById("income-amount").value = inc.amount;
+  document.getElementById("income-modal").classList.remove("hidden");
+  // delete the old one so re-saving replaces it
+  incomes = incomes.filter(x => x.id !== id);
+  localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
+}
+
+function deleteIncome(id) {
+  if (!confirm("Delete this income source?")) return;
+  incomes = incomes.filter(x => x.id !== id);
+  localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
+  renderTotalIncome();
+  openManageIncomeModal(); // refresh list
+}
+    
     function populateTxCategoryDropdown(){
       const sel = $("#tx-category");
       if(!sel) return;
@@ -705,7 +825,7 @@ function clearError(el) {
 
   // Draw each category slice proportional to total income
   categories.forEach(c => {
-    const share = (Number(c.budget) || 0) / safeinc;
+    const share = (Number(c.budget) || 0) / safeInc;
     if (share <= 0) return;
     const start = angle * 360;
     const end = (angle + share) * 360;
@@ -865,14 +985,9 @@ window.addEventListener("DOMContentLoaded", () => {
   initLogin();
 
   // Income save
-  document.getElementById("save-income").addEventListener("click", () => {
-    localStorage.setItem(STORAGE.income,
-      String(Number(document.getElementById("income").value) || 0));
-    drawDonuts();
-    renderDashboardProgress();
-    renderBudgetProgress();
-  });
-
+document.getElementById("add-income-btn").addEventListener("click", openIncomeModal);
+loadIncomes();
+  document.getElementById("manage-income-btn").addEventListener("click", openManageIncomeModal);
   // Add category
   document.getElementById("add-cat").addEventListener("click", addCategory);
 
@@ -898,6 +1013,8 @@ window.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
+
 
 
 
