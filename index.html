@@ -38,7 +38,53 @@
     .container{flex:1;overflow:auto;padding:14px 16px 84px;}
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 8px 16px var(--shadow);}
     .card h2{font-size:16px;margin-bottom:8px;color:#E9F2F0;}
+    /* XP / Level Card */
+#xp-card {
+  text-align: left;
+}
+.profile-pic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #2F3940;
+  border: 2px solid var(--line);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
 
+.level-title {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 6px;
+  color: #E9F2F0;
+}
+
+.xp-progress {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #1f262a;
+  border: 1px solid #2f3a3f;
+  margin-top: 2px;
+}
+.xp-label {
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.badge-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 0 4px;
+}
+.badge-circle {
+  width: 40px;
+  height: 40px;
+  background: #20272B;
+  border: 2px solid #2F3940;
+  border-radius: 50%;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .right{margin-left:auto;}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;}
@@ -115,17 +161,39 @@
   </section>
 
   <!-- DASHBOARD -->
-  <section id="dashboard" class="hidden">
-    <header><h1>Dashboard</h1><div>⚙️</div></header>
-    <div class="container">
-      <div class="card">
-        <div class="row">
-          <h2>Accounts</h2>
-          <button class="btn ghost right" onclick="showPage('accounts')">Open Accounts →</button>
+<section id="dashboard" class="hidden">
+  <header><h1>Dashboard</h1><div>⚙️</div></header>
+  <div class="container">
+    <!-- 🟢 XP / Level Card -->
+    <div class="card" id="xp-card">
+      <div class="row" style="align-items:center;gap:16px;">
+        <!-- Placeholder profile image -->
+        <div class="profile-pic"></div>
+        <div style="flex:1;">
+          <div class="level-title">Level <span id="user-level">1</span></div>
+          <div class="progress-wrap xp-progress">
+            <div id="xp-bar" class="progress-fill" style="width:70%;background:var(--mint);"></div>
+          </div>
+          <div id="xp-label" class="xp-label">350 / 500 XP</div>
         </div>
-        <p style="color:var(--muted);margin-top:6px;">Manage transactions and categories in Accounts & Budget tabs.</p>
       </div>
-
+      <!-- Badge placeholders -->
+      <div class="badge-row">
+        <div class="badge-circle"></div>
+        <div class="badge-circle"></div>
+        <div class="badge-circle"></div>
+        <div class="badge-circle"></div>
+        <div class="badge-circle"></div>
+      </div>
+    </div>
+    <!-- 🟣 Accounts Card -->
+    <div class="card">
+      <div class="row">
+        <h2>Accounts</h2>
+        <button class="btn ghost right" onclick="showPage('accounts')">Open Accounts →</button>
+      </div>
+      <p style="color:var(--muted);margin-top:6px;">Manage transactions and categories in Accounts & Budget tabs.</p>
+    </div>
       <div class="card">
         <div class="row" style="align-items:baseline;">
           <h2>Budget <span id="dash-month" style="color:#8fd6c3;font-weight:700;"></span></h2>
@@ -1097,6 +1165,23 @@ function hideTooltip() {
   const tip = document.getElementById("tooltip");
   if (tip) tip.classList.remove("visible");
 }
+    /************ XP SYSTEM ************/
+let xp = 350;
+let level = 1;
+let xpForNext = 500;
+
+function renderXP() {
+  const xpBar = document.getElementById("xp-bar");
+  const xpLabel = document.getElementById("xp-label");
+  const levelSpan = document.getElementById("user-level");
+
+  if (!xpBar || !xpLabel || !levelSpan) return;
+
+  const pct = Math.min(100, Math.round((xp / xpForNext) * 100));
+  xpBar.style.width = pct + "%";
+  xpLabel.textContent = `${xp.toLocaleString()} / ${xpForNext.toLocaleString()} XP`;
+  levelSpan.textContent = level;
+}
 
     /************ RENDER ALL ************/
     function renderAll(){
@@ -1111,6 +1196,7 @@ function hideTooltip() {
       renderDashboardProgress();
       renderBudgetProgress();
       renderIncomeProgress();
+      renderXP();
     }
 
     /************ INIT ************/
@@ -1146,6 +1232,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
