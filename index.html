@@ -741,7 +741,7 @@ function deleteIncomeSource(id) {
   localStorage.setItem("saavr_v3_4_incomes", JSON.stringify(incomes));
   renderTotalIncome();
   openEditIncomeModal(); // refresh list
-
+}
     /************ RENDER CATEGORY LIST (Budget) ************/
     function renderCategoryList(){
       const list = $("#cat-list");
@@ -1030,6 +1030,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
