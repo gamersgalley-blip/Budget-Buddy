@@ -925,15 +925,9 @@ window.addEventListener("DOMContentLoaded", () => {
   load();
   initLogin();
 
-  // Income save
-  document.getElementById("save-income").addEventListener("click", () => {
-    localStorage.setItem(STORAGE.income,
-      String(Number(document.getElementById("income").value) || 0));
-    drawDonuts();
-    renderDashboardProgress();
-    renderBudgetProgress();
-  });
-document.getElementById("add-income-btn").addEventListener("click", openIncomeModal);
+// Income buttons
+const addIncomeBtn = document.getElementById("add-income-btn");
+if (addIncomeBtn) addIncomeBtn.addEventListener("click", openIncomeModal);
 loadIncomes();
   // Add category
   document.getElementById("add-cat").addEventListener("click", addCategory);
@@ -960,6 +954,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
