@@ -154,6 +154,36 @@
 .hidden {
   display: none !important;
 }
+    /* Hover effect for dropdown options */
+.dropdown-section:hover {
+  background: rgba(255, 255, 255, 0.05); /* subtle grey overlay */
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+/* Optional: make text slightly brighter on hover */
+.dropdown-section:hover h4 {
+  color: #FFFFFF;
+}
+
+.dropdown-section:hover p {
+  color: #C7D0D5;
+}
+    /* Animate divider fade on hover */
+.divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+/* When hovering over a section, subtly dim nearby dividers */
+.dropdown-section:hover + .divider,
+.divider:hover {
+  opacity: 0.4;
+  background: rgba(255,255,255,0.06);
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
@@ -1354,6 +1384,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
