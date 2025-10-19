@@ -38,7 +38,6 @@
     header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#222A2F;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
     header h1{color:var(--mint);font-size:18px;letter-spacing:.3px;}
     .container{flex:1;overflow:auto;padding:14px 16px 84px;}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 8px 16px var(--shadow);}
     .card h2{font-size:16px;margin-bottom:8px;color:#E9F2F0;}
     /* XP / Level Card */
 #xp-card {
@@ -48,9 +47,74 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: #2F3940;
-  border: 2px solid var(--line);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  background: linear-gradient(145deg, #2F3940, #1B2125);
+  border: 2px solid var(--mint);
+  box-shadow:
+    0 0 6px rgba(80,195,163,0.25),   /* outer mint glow */
+    0 2px 6px rgba(0,0,0,0.45);      /* subtle depth shadow */
+  transition: all 0.3s ease;
+}
+    /* === TEXT READABILITY & COLOR BALANCE (v3.5.3) === */
+
+/* Muted labels and small info text */
+label, .progress-label, #no-tx, #no-cats, p[style*="color:var(--muted)"] {
+  transition: color 0.3s ease;
+}
+
+/* Light mode: make muted text darker for readability */
+body.light-mode label,
+body.light-mode .progress-label,
+body.light-mode #no-tx,
+body.light-mode #no-cats,
+body.light-mode p[style*="color:var(--muted)"] {
+  color: #4B555C !important;
+}
+
+/* Headings */
+header h1, .card h2 {
+  transition: color 0.3s ease;
+}
+
+/* Light mode headings */
+body.light-mode header h1,
+body.light-mode .card h2 {
+  color: #1C2429;
+}
+
+/* Buttons */
+.btn {
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.light-mode .btn.primary {
+  background: var(--mint);
+  color: #0F3C31;
+}
+
+body.light-mode .btn.ghost {
+  color: #2AA382;
+}
+
+body.light-mode .btn.outline {
+  border-color: #2AA382;
+  color: #2AA382;
+}
+
+/* Dropdowns & inputs for light mode */
+body.light-mode input,
+body.light-mode select {
+  background: #FFFFFF;
+  color: #1B2328;
+  border-color: #D5DEE3;
+}
+
+/* Light Mode version */
+body.light-mode .profile-pic {
+  background: linear-gradient(145deg, #F0F3F5, #FFFFFF);
+  border-color: #2AA382;
+  box-shadow:
+    0 0 4px rgba(42,163,130,0.25),   /* soft mint glow */
+    0 1px 3px rgba(0,0,0,0.1);       /* light shadow for definition */
 }
 
 .level-title {
@@ -79,19 +143,53 @@
   color: var(--muted);
   margin-top: 6px;
 }
+/* Badge container */
 .badge-row {
   display: flex;
   justify-content: space-between;
   margin-top: 14px;
   padding: 0 4px;
 }
+
+/* Default dark mode badges */
 .badge-circle {
   width: 40px;
   height: 40px;
-  background: #20272B;
-  border: 2px solid #2F3940;
   border-radius: 50%;
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+  background: radial-gradient(circle at 30% 30%, #2E363B, #1B2125);
+  border: 2px solid #3A454C;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.08),  /* inner shine */
+    inset 0 -3px 6px rgba(0, 0, 0, 0.5),        /* inner shadow */
+    0 2px 6px rgba(0, 0, 0, 0.5);               /* outer depth shadow */
+  transition: all 0.3s ease;
+}
+
+/* Hover effect — subtle glow */
+.badge-circle:hover {
+  transform: scale(1.05);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.12),
+    0 0 8px rgba(80, 195, 163, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Light Mode badges */
+body.light-mode .badge-circle {
+  background: radial-gradient(circle at 30% 30%, #FFFFFF, #E5EBEF);
+  border: 2px solid #CBD3D8;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional hover accent in light mode */
+body.light-mode .badge-circle:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 6px rgba(42,163,130,0.35),
+    0 2px 6px rgba(0,0,0,0.2);
 }
     /* ⚙️ Settings Dropdown */
 .settings-container {
@@ -258,13 +356,186 @@
     .error{color:var(--danger);font-size:13px;margin-top:6px;}
 
     /* Donut + progress */
-    .donut-wrap{position:relative;width:260px;height:260px;margin:8px auto;}
-    .donut-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-weight:800;font-size:20px;text-shadow:0 2px 10px rgba(0,0,0,.4);}
-    .center-positive{color:var(--mint);}
-    .center-negative{color:var(--danger);}
+/* Donut container */
+.donut-wrap {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 8px auto;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
+  transition: filter 0.3s ease;
+}
 
-    .progress-wrap{width:92%;max-width:520px;margin:8px auto 0;background:#1f262a;border:1px solid #2f3a3f;border-radius:999px;overflow:hidden;}
-    .progress-fill{height:18px;background:var(--mint);}
+/* Center number styling */
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-weight: 800;
+  font-size: 22px;
+  color: #E9F2F0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* When the remaining balance is positive or negative */
+.center-positive {
+  color: var(--mint);
+}
+
+.center-negative {
+  color: var(--danger);
+}
+
+/* Light Mode Adjustments */
+body.light-mode .donut-wrap {
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15));
+}
+
+body.light-mode .donut-center {
+  color: #1B2328;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional subtle ring glow animation */
+@keyframes pulseGlow {
+  0% { filter: drop-shadow(0 0 0 rgba(80,195,163,0.3)); }
+  50% { filter: drop-shadow(0 0 8px rgba(80,195,163,0.45)); }
+  100% { filter: drop-shadow(0 0 0 rgba(80,195,163,0.3)); }
+}
+.center-positive {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Progress bar container */
+.progress-wrap {
+  position: relative;
+  width: 92%;
+  max-width: 520px;
+  margin: 8px auto 0;
+  background: rgba(0, 0, 0, 0.08);     /* subtle dark tint */
+  border: 1px solid #2f3a3f;
+  border-radius: 999px;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+/* The filling part of the bar */
+.progress-fill {
+  height: 18px;
+  background: var(--mint);
+  transition: width 0.3s ease, background 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);  /* soft glow underneath */
+}
+
+/* Light-mode adjustments (activated when body.light-mode is added) */
+body.light-mode .progress-wrap {
+  background: rgba(0, 0, 0, 0.05);     /* lighter tint behind bar */
+  border-color: #D7DEE4;
+}
+
+body.light-mode .progress-fill {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);  /* lighter shadow for light mode */
+}
+    /* CARD STYLE — universal layout */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 14px var(--shadow);
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Keep your existing heading style */
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #E9F2F0;
+}
+
+/* Hover effect for depth */
+.card:hover {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* Light Mode card styles */
+body.light-mode .card {
+  background: #FFFFFF;
+  border: 1px solid #D9E1E6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .card:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* CATEGORY ITEM ROWS */
+.cat-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: #20272B;
+  margin-bottom: 10px;
+  border: 1px solid #30383E;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cat-item:hover {
+  background: #262E34;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Overspent styling */
+.cat-item.overspent {
+  background: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.55);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.25);
+}
+
+/* Light Mode categories */
+body.light-mode .cat-item {
+  background: #F9FAFB;
+  border: 1px solid #E2E8EC;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .cat-item:hover {
+  background: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .cat-item.overspent {
+  background: rgba(255, 107, 107, 0.08);
+  border-color: rgba(255, 107, 107, 0.35);
+  box-shadow: 0 1px 5px rgba(255, 107, 107, 0.2);
+}
+
+/* Category text & labels */
+.cat-name {
+  font-weight: 600;
+  color: #E9F2F0;
+  transition: color 0.3s ease;
+}
+body.light-mode .cat-name {
+  color: #1B2328;
+}
+
+.cat-amount {
+  color: #CFE1DE;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+body.light-mode .cat-amount {
+  color: #263035;
+}
     .progress-fill.danger {background: var(--danger);}
     .progress-label{margin-top:6px;text-align:center;color:var(--muted);font-weight:700;}
 
@@ -276,7 +547,6 @@
     .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(80,195,163,.12);border:1px solid rgba(80,195,163,.35);color:var(--mint);font-size:11px;font-weight:700;}
 
     /* Category / Transaction rows */
-    .cat-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:12px;background:#20272B;margin-bottom:10px;border:1px solid #30383E;}
     .cat-item.overspent{background: rgba(255,107,107,0.12);border-color: rgba(255,107,107,0.55);}
     .swatch{width:18px;height:18px;border-radius:5px;border:2px solid #101416;box-shadow:0 1px 2px var(--shadow);}
     .cat-name{font-weight:600;}
@@ -1476,16 +1746,16 @@ function updateThemeCheckmark(theme) {
 function applyTheme(mode) {
   const root = document.documentElement;
 
-  if (mode === "light") {
-    root.style.setProperty("--dark", "#F4F6F8");
-    root.style.setProperty("--card", "#FFFFFF");
-    root.style.setProperty("--line", "#D1D9DF");
-    root.style.setProperty("--muted", "#5A636B");
-    root.style.setProperty("--ringbg", "#E1E6EA");
-    root.style.setProperty("--shadow", "rgba(0,0,0,0.15)");
-    root.style.setProperty("--mint", "#45B294");
-    document.body.style.color = "#20272B";
-  } else {
+if (mode === "light") {
+  root.style.setProperty("--dark", "#F2F4F6");
+  root.style.setProperty("--card", "#FFFFFF");
+  root.style.setProperty("--line", "#D7DEE4");
+  root.style.setProperty("--muted", "#4B555C");
+  root.style.setProperty("--ringbg", "#E8ECEF");
+  root.style.setProperty("--shadow", "rgba(0,0,0,0.1)");
+  root.style.setProperty("--mint", "#2AA382");
+  document.body.style.color = "#1B2328";
+} else {
     // Default Dark Mode
     root.style.setProperty("--dark", "#1E2428");
     root.style.setProperty("--card", "#252C31");
@@ -1532,6 +1802,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
