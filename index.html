@@ -189,6 +189,58 @@
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+    /* Settings Panels (main + appearance) */
+.settings-panel {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #232A2E;
+  border-radius: 12px;
+}
+
+.settings-panel.hidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.settings-panel.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Theme dots + hover effects */
+.theme-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.theme-choice:hover {
+  background: rgba(255,255,255,0.05);
+  transition: background 0.15s ease;
+}
+
+.theme-choice .checkmark {
+  font-size: 14px;
+  color: var(--mint);
+}
+
+/* Back button style */
+#back-to-main {
+  font-weight: 600;
+  color: var(--mint);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+#back-to-main:hover {
+  color: #8fffd9;
+}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
     .right{margin-left:auto;}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;}
@@ -268,12 +320,15 @@
 <section id="dashboard" class="hidden">
 <header>
   <h1>Dashboard</h1>
-  <div class="settings-container">
-    <button id="settings-btn" class="settings-btn">⚙️</button>
-    <div id="settings-dropdown" class="dropdown hidden">
-      <div class="dropdown-section">
+ <div class="settings-container">
+  <button id="settings-btn" class="settings-btn">⚙️</button>
+  <div id="settings-dropdown" class="dropdown hidden">
+
+    <!-- MAIN SETTINGS PANEL -->
+    <div id="main-settings" class="settings-panel active">
+      <div class="dropdown-section appearance-option">
         <h4>Appearance</h4>
-        <p>Theme</p>
+        <p id="open-appearance">Theme</p>
       </div>
       <div class="divider"></div>
 
@@ -294,7 +349,32 @@
         <p>Contact support or send feedback</p>
       </div>
     </div>
+
+    <!-- APPEARANCE SUB-PANEL -->
+    <div id="appearance-panel" class="settings-panel hidden">
+      <div class="dropdown-section" id="back-to-main">
+        ← Back
+      </div>
+      <div class="divider"></div>
+
+      <div class="dropdown-section theme-choice" data-theme="dark">
+        <div class="row">
+          <div class="theme-dot" style="background:#1E2428;"></div>
+          <span>Dark Mode</span>
+          <span class="checkmark right hidden">✓</span>
+        </div>
+      </div>
+
+      <div class="dropdown-section theme-choice" data-theme="light">
+        <div class="row">
+          <div class="theme-dot" style="background:#F0F0F0;border:1px solid #ccc;"></div>
+          <span>Light Mode</span>
+          <span class="checkmark right hidden">✓</span>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 </header>
   <div class="container">
     <!-- 🟢 XP / Level Card -->
@@ -1347,11 +1427,82 @@ function initSettingsDropdown() {
     }
   });
 }
+    /************ SETTINGS SUB-PANEL LOGIC ************/
+function initAppearancePanel() {
+  const openBtn = document.getElementById("open-appearance");
+  const backBtn = document.getElementById("back-to-main");
+  const mainPanel = document.getElementById("main-settings");
+  const appearancePanel = document.getElementById("appearance-panel");
+  const choices = document.querySelectorAll(".theme-choice");
+
+  if (!openBtn || !backBtn || !mainPanel || !appearancePanel) return;
+
+  openBtn.addEventListener("click", () => {
+    mainPanel.classList.remove("active");
+    mainPanel.classList.add("hidden");
+    appearancePanel.classList.remove("hidden");
+    appearancePanel.classList.add("active");
+  });
+
+  backBtn.addEventListener("click", () => {
+    appearancePanel.classList.remove("active");
+    appearancePanel.classList.add("hidden");
+    mainPanel.classList.remove("hidden");
+    mainPanel.classList.add("active");
+  });
+
+  choices.forEach(choice => {
+    choice.addEventListener("click", () => {
+      const theme = choice.dataset.theme;
+      applyTheme(theme);
+      localStorage.setItem("saavr_theme", theme);
+      updateThemeCheckmark(theme);
+    });
+  });
+
+  // load saved theme
+  const saved = localStorage.getItem("saavr_theme") || "dark";
+  applyTheme(saved);
+  updateThemeCheckmark(saved);
+}
+
+function updateThemeCheckmark(theme) {
+  document.querySelectorAll(".theme-choice .checkmark").forEach(c => c.classList.add("hidden"));
+  const active = document.querySelector(`.theme-choice[data-theme="${theme}"] .checkmark`);
+  if (active) active.classList.remove("hidden");
+}
+
+/************ APPLY THEME ************/
+function applyTheme(mode) {
+  const root = document.documentElement;
+
+  if (mode === "light") {
+    root.style.setProperty("--dark", "#F4F6F8");
+    root.style.setProperty("--card", "#FFFFFF");
+    root.style.setProperty("--line", "#D1D9DF");
+    root.style.setProperty("--muted", "#5A636B");
+    root.style.setProperty("--ringbg", "#E1E6EA");
+    root.style.setProperty("--shadow", "rgba(0,0,0,0.15)");
+    root.style.setProperty("--mint", "#45B294");
+    document.body.style.color = "#20272B";
+  } else {
+    // Default Dark Mode
+    root.style.setProperty("--dark", "#1E2428");
+    root.style.setProperty("--card", "#252C31");
+    root.style.setProperty("--line", "#2F3940");
+    root.style.setProperty("--muted", "#9BA6AD");
+    root.style.setProperty("--ringbg", "#2A3237");
+    root.style.setProperty("--shadow", "rgba(0,0,0,0.35)");
+    root.style.setProperty("--mint", "#50C3A3");
+    document.body.style.color = "#E9F2F0";
+  }
+}
     /************ INIT ************/
 window.addEventListener("DOMContentLoaded", () => {
   load();
   initLogin();
   initSettingsDropdown();
+  initAppearancePanel();
 
   // Income save
 document.getElementById("add-income-btn").addEventListener("click", openIncomeModal);
@@ -1381,6 +1532,7 @@ loadIncomes();
   </script>
 </body>
 </html>
+
 
 
 
