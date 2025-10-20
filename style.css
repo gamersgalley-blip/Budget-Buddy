@@ -269,7 +269,18 @@ header h1 {
 #appearance-panel #back-to-main:hover {
   background: rgba(80,195,163,0.1);
 }
+/* ───────────────────────────────
+   🧩 FIX FLOATING BAR ABOVE APPEARANCE PANEL
+─────────────────────────────── */
+#appearance-panel {
+  margin-top: 6px;          /* Push it slightly below the header */
+  top: auto !important;     /* Prevents forced top alignment */
+  border-top: none;         /* Removes visual seam */
+}
 
+header {
+  overflow: visible;         /* Ensure dropdown can flow outside header */
+}
 /* ───────────────────────────────
    ⚡ UNIVERSAL UI ELEMENTS
 ─────────────────────────────── */
@@ -962,6 +973,7 @@ select {
 .error.shake {
   animation: softShake 0.4s ease;
 }
+
 
 
 
