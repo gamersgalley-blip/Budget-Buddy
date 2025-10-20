@@ -804,8 +804,8 @@ function initAppearancePanel() {
     appearancePanel.classList.remove("active");
   });
   backBtn.addEventListener("click", () => {
-    appearancePanel.classList.add("active");
-    mainPanel.classList.remove("hidden");
+    appearancePanel.classList.add("hidden");
+    mainPanel.classList.remove("active");
   });
   choices.forEach(choice => {
     choice.addEventListener("click", () => {
@@ -930,6 +930,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
