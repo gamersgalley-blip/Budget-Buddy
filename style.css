@@ -207,29 +207,22 @@ header h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 /* ───────────────────────────────
-   🎨 APPEARANCE SUB-PANEL STYLING (FIXED)
+   🎨 APPEARANCE SUB-PANEL STYLING
 ─────────────────────────────── */
 #appearance-panel {
-  position: absolute;
-  top: 0; /* perfectly aligned with dropdown */
-  left: 0;
-  width: 100%;
   background: #232A2E;
-  border-radius: 12px;
   border: 1px solid var(--line);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
   padding: 10px 0;
-  z-index: 40;
+  width: 240px;
+  z-index: 35;
+  position: absolute;
+  top: 34px;
+  right: 0;
   animation: fadeIn 0.25s ease forwards;
 }
 
-/* ensure both panels overlay cleanly inside dropdown */
-#settings-dropdown {
-  position: relative;
-  overflow: hidden;
-}
-
-/* shared look for each row */
 #appearance-panel .dropdown-section {
   display: flex;
   align-items: center;
@@ -242,11 +235,10 @@ header h1 {
 }
 
 #appearance-panel .dropdown-section:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255,255,255,0.05);
   transform: translateY(-1px);
 }
 
-/* divider */
 #appearance-panel .divider {
   height: 1px;
   background: var(--line);
@@ -254,13 +246,12 @@ header h1 {
   opacity: 0.8;
 }
 
-/* theme dots and checkmarks */
 #appearance-panel .theme-dot {
   width: 18px;
   height: 18px;
   border-radius: 50%;
   margin-right: 8px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 4px rgba(0,0,0,0.4);
 }
 
 #appearance-panel .checkmark {
@@ -270,15 +261,13 @@ header h1 {
   opacity: 0.85;
 }
 
-/* back button */
 #appearance-panel #back-to-main {
   font-weight: 600;
   color: var(--mint);
 }
 
 #appearance-panel #back-to-main:hover {
-  background: rgba(80, 195, 163, 0.1);
-  transform: none;
+  background: rgba(80,195,163,0.1);
 }
 /* ───────────────────────────────
    ⚡ UNIVERSAL UI ELEMENTS
@@ -972,6 +961,7 @@ select {
 .error.shake {
   animation: softShake 0.4s ease;
 }
+
 
 
 
