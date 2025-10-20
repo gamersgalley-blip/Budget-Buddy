@@ -194,23 +194,45 @@ function presetFor(name) { return PRESETS.find(p => p.name === name) || PRESETS[
 function addCategory() {
   const msg = $("#add-error");
   msg.textContent = "";
+  msg.classList.add("hidden"); // reset visibility
+
   const name = $("#cat-select").value;
   const budget = Number($("#cat-amount").value);
   const inc = Number(localStorage.getItem(STORAGE.income) || 0);
 
-  if (!name || !(budget > 0)) return msg.textContent = "Choose a category and enter a positive budget.";
-  if (!(inc > 0)) return msg.textContent = "Please set your monthly income first.";
+  if (!name || !(budget > 0)) {
+    msg.textContent = "Choose a category and enter a positive budget.";
+    msg.classList.remove("hidden");
+    return;
+  }
+
+  if (!(inc > 0)) {
+    msg.textContent = "Please set your monthly income first.";
+    msg.classList.remove("hidden");
+    return;
+  }
 
   const totalBudget = categories.reduce((s, c) => s + (Number(c.budget) || 0), 0);
-  if (totalBudget + budget > inc) return msg.textContent = `Total budget exceeds income of $${inc.toLocaleString()}.`;
+  if (totalBudget + budget > inc) {
+    msg.textContent = `Total budget exceeds income of $${inc.toLocaleString()}.`;
+    msg.classList.remove("hidden");
+    return;
+  }
 
+  // Proceed if all validations pass
   const p = presetFor(name);
   const existing = categories.find(c => c.name === name);
-  existing ? (existing.budget = budget, existing.color = p.color)
-           : categories.push({ id: uid(), name, budget, color: p.color });
+  if (existing) {
+    existing.budget = budget;
+    existing.color = p.color;
+  } else {
+    categories.push({ id: uid(), name, budget, color: p.color });
+  }
 
   $("#cat-amount").value = "";
+  msg.classList.add("hidden");
   save();
+}
 }
 function renderCategoryList() {
   const list = $("#cat-list");
@@ -880,6 +902,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
