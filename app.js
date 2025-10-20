@@ -323,7 +323,35 @@ function renderTxList() {
     list.append(row);
   });
 }
+/* ───────────────────────────────
+   💾 SAVE TRANSACTION
+─────────────────────────────── */
+function saveTx() {
+  const name = $("#tx-name").value.trim();
+  const amount = Number($("#tx-amount").value);
+  const date = $("#tx-date").value;
+  const cat = $("#tx-category").value || null;
 
+  if (!name || !(amount > 0) || !date) {
+    alert("Please enter a valid name, amount, and date.");
+    return;
+  }
+
+  transactions.push({
+    id: uid(),
+    name,
+    amount,
+    date,
+    categoryId: cat
+  });
+
+  localStorage.setItem(STORAGE.tx, JSON.stringify(transactions));
+  closeTxModal();
+  renderTxList();
+  drawDonuts();
+  renderBudgetProgress();
+  renderDashboardProgress();
+}
 /* ───────────────────────────────
    🧩 RESTORED CORE FUNCTIONS
 ─────────────────────────────── */
@@ -843,3 +871,4 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
