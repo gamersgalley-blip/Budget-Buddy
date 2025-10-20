@@ -696,20 +696,26 @@ function showSliceTooltip(evt, cat, inc, ym) {
 
   if (diff > 0) {
     diffLine = `<div class="row"><span style="color:var(--muted)">Over by</span><b style="color:var(--danger)">+$${diff.toLocaleString()}</b></div>`;
+    // 🔥 Red glow for overspent
+    tip.style.boxShadow = "0 0 20px rgba(255, 107, 107, 0.7)";
+    tip.style.borderColor = "rgba(255,107,107,0.9)";
   } else {
     const left = Math.abs(diff);
     diffLine = `<div class="row"><span style="color:var(--muted)">Left</span><b style="color:var(--mint)">$${left.toLocaleString()}</b></div>`;
+    // 🧊 Default mint glow for normal
+    tip.style.boxShadow = "0 0 16px rgba(80,195,163,0.45)";
+    tip.style.borderColor = "#3A454C";
   }
 
-  // Tooltip inner layout
+  // Tooltip content
   tip.innerHTML = `
-    <div class="title">${cat.name}</div>
+    <div class="title" style="font-weight:700;margin-bottom:4px;">${cat.name}</div>
     ${spentLine}
     ${budgetLine}
     ${diffLine}
   `;
 
-  // Follow cursor
+  // Position tooltip
   tip.style.left = evt.clientX + 14 + "px";
   tip.style.top = evt.clientY + 14 + "px";
   tip.classList.add("visible");
@@ -872,6 +878,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
