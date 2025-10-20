@@ -206,6 +206,69 @@ header h1 {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* ───────────────────────────────
+   🎨 APPEARANCE SUB-PANEL STYLING
+─────────────────────────────── */
+#appearance-panel {
+  background: #232A2E;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  padding: 10px 0;
+  width: 240px;
+  z-index: 35;
+  position: absolute;
+  top: 34px;
+  right: 0;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+#appearance-panel .dropdown-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #E9F2F0;
+  font-size: 14px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+#appearance-panel .dropdown-section:hover {
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-1px);
+}
+
+#appearance-panel .divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+  opacity: 0.8;
+}
+
+#appearance-panel .theme-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+
+#appearance-panel .checkmark {
+  font-size: 16px;
+  color: var(--mint);
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+#appearance-panel #back-to-main {
+  font-weight: 600;
+  color: var(--mint);
+}
+
+#appearance-panel #back-to-main:hover {
+  background: rgba(80,195,163,0.1);
+}
 
 /* ───────────────────────────────
    ⚡ UNIVERSAL UI ELEMENTS
@@ -556,6 +619,27 @@ body.light-mode header,
 body.light-mode nav {
   border-color: #CCD5DA;
 }
+body.light-mode #appearance-panel {
+  background: #FFFFFF;
+  border-color: #D9E1E6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+body.light-mode #appearance-panel .dropdown-section {
+  color: #1B2328;
+}
+
+body.light-mode #appearance-panel .dropdown-section:hover {
+  background: #F3F5F6;
+}
+
+body.light-mode #appearance-panel .divider {
+  background: #E2E8EC;
+}
+
+body.light-mode #appearance-panel #back-to-main {
+  color: var(--mint);
+}
 /* ───────────────────────────────
    🧭 LIGHT MODE TEXT CONTRAST FIXES
 ─────────────────────────────── */
@@ -878,6 +962,7 @@ select {
 .error.shake {
   animation: softShake 0.4s ease;
 }
+
 
 
 
