@@ -230,35 +230,38 @@ header h1 {
 .ghost { background: transparent; color: var(--mint); font-weight: 600; }
 .small { padding: 6px 10px; border-radius: 8px; font-size: 12px; }
 /* ───────────────────────────────
-   💰 ADD BUTTONS (Match Saavr Nav Style)
+   💰 ADD BUTTONS — MATCH NAV STYLE
 ─────────────────────────────── */
 .btn.primary {
-  background: var(--mint);
-  color: rgb(9,48,39);
+  background: transparent;
+  color: var(--mint);
   border: 1px solid var(--mint);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(80,195,163,0.25);
-  font-weight: 700;
+  font-weight: 600;
   transition: all 0.25s ease;
+  box-shadow: none;
 }
 
 .btn.primary:hover {
-  background: #66D0B1;
-  color: rgb(6,30,24);
-  box-shadow: 0 0 16px rgba(80,195,163,0.35);
+  background: rgba(80,195,163,0.12);
+  color: var(--mint);
+  border-color: var(--mint);
+  box-shadow: 0 0 10px rgba(80,195,163,0.25);
 }
 
 /* Light mode version */
 body.light-mode .btn.primary {
-  background: var(--mint);
-  color: white;
-  border: 1px solid var(--mint);
-  box-shadow: 0 0 10px rgba(0,0,0,0.08);
+  background: #F5F7F8;
+  color: #4B555C;
+  border: 1px solid #D9E1E6;
+  box-shadow: none;
 }
 
 body.light-mode .btn.primary:hover {
-  background: #58B99A;
-  box-shadow: 0 0 14px rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.05);
+  border-color: #C8D0D6;
+  color: #1B2328;
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
 }
 /* ───────────────────────────────
    📊 CARDS & CATEGORIES
@@ -850,6 +853,7 @@ select {
     fill 0.4s ease,
     stroke 0.4s ease;
 }
+
 
 
 
