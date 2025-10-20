@@ -248,8 +248,41 @@
 
   <!-- Modals -->
   <div id="modals"></div>
+  
+  <!-- ADD INCOME MODAL -->
+<div id="income-modal" class="backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Add Income Source</h3>
+    <div class="row">
+      <div style="flex:2;min-width:200px;">
+        <label for="income-name">Name</label>
+        <input id="income-name" type="text" placeholder="e.g., Main Job, Side Gig">
+      </div>
+      <div style="flex:1;min-width:140px;">
+        <label for="income-amount">Amount ($)</label>
+        <input id="income-amount" type="number" min="0" step="1" placeholder="0">
+      </div>
+    </div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px;">
+      <button class="btn ghost" onclick="closeIncomeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveIncome()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT INCOME MODAL -->
+<div id="edit-income-modal" class="backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Edit or Delete Income Sources</h3>
+    <div id="income-list" style="margin-top:10px;"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px;">
+      <button class="btn ghost" onclick="closeEditIncomeModal()">Close</button>
+    </div>
+  </div>
+</div>
 
   <script src="app.js"></script>
 </body>
 </html>
+
 
