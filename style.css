@@ -207,7 +207,7 @@ header h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 /* ───────────────────────────────
-   🧩 SETTINGS PANEL FIX (no overlap or ghost bar)
+   🧩 SETTINGS PANEL FIX — Clickable + Smooth Switch
 ─────────────────────────────── */
 .settings-panel {
   position: absolute;
@@ -220,21 +220,24 @@ header h1 {
   opacity: 0;
   pointer-events: none;
   transform: translateY(-6px);
+  z-index: 0;
 }
 
 .settings-panel.active {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+  z-index: 2;
 }
 
 .settings-panel.hidden {
   opacity: 0;
   pointer-events: none;
   transform: translateY(-6px);
+  z-index: 1;
 }
 
-/* Keep dropdown container stable and same height */
+/* Keep dropdown shell consistent */
 #settings-dropdown {
   position: absolute;
   top: 34px;
@@ -243,6 +246,7 @@ header h1 {
   background: transparent;
   border: none;
   padding: 0;
+  overflow: hidden;
 }
 /* ───────────────────────────────
    🎨 APPEARANCE SUB-PANEL (MATCH MAIN SETTINGS)
@@ -1001,6 +1005,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
