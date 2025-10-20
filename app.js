@@ -212,15 +212,6 @@ function addCategory() {
 
     // Clear any previous timers
     clearTimeout(msg._timeout);
-
-    // Auto-hide after 5 seconds
-    msg._timeout = setTimeout(() => {
-      msg.style.animation = "fadeOutError 0.4s ease forwards";
-      setTimeout(() => {
-        msg.classList.remove("visible");
-        msg.style.animation = "";
-      }, 400);
-    }, 5000);
   }
 
   if (!name || !(budget > 0)) {
@@ -921,6 +912,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
