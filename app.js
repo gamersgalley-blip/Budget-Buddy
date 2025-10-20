@@ -419,7 +419,17 @@ function showPage(id) {
     if (!s) return;
     s.classList.toggle("hidden", pid !== id);
   });
-
+   
+  // Hide any visible error message if leaving the Budget page
+  if (id !== "budget") {
+    const msg = document.getElementById("add-error");
+    if (msg) {
+      msg.classList.remove("visible");
+      msg.style.animation = "";
+      msg.textContent = "";
+    }
+  }
+   
   // Highlight active nav button
   document.querySelectorAll("nav button").forEach(btn => {
     if (btn.getAttribute("onclick")?.includes(id)) {
@@ -912,6 +922,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
