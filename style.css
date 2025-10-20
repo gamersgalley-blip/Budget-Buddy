@@ -206,30 +206,6 @@ header h1 {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.settings-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.settings-panel.hidden {
-  display: none !important;
-}
-
-.dropdown {
-  position: absolute;
-  top: 34px;
-  right: 0;
-  background: #232A2E;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-  width: 240px;
-  z-index: 30;
-  padding: 0;
-  overflow: hidden;
-}
 /* ───────────────────────────────
    🎨 APPEARANCE SUB-PANEL STYLING
 ─────────────────────────────── */
@@ -985,6 +961,7 @@ select {
 .error.shake {
   animation: softShake 0.4s ease;
 }
+
 
 
 
