@@ -217,6 +217,9 @@ header h1 {
   box-shadow: 0 8px 20px rgba(0,0,0,0.6);
   padding: 10px 0;
   width: 240px;
+  position: relative;       /* ✅ Changed from absolute */
+  top: 0;                   /* ✅ Prevents vertical offset */
+  right: 0;                 /* ✅ Keeps aligned with main settings */
   z-index: 35;
   animation: fadeIn 0.25s ease forwards;
 }
@@ -226,6 +229,7 @@ header h1 {
   display: block;
 }
 
+/* Shared dropdown-section styling */
 #appearance-panel .dropdown-section {
   display: flex;
   align-items: center;
@@ -964,6 +968,7 @@ select {
 .error.shake {
   animation: softShake 0.4s ease;
 }
+
 
 
 
