@@ -270,35 +270,6 @@ header h1 {
   background: rgba(80,195,163,0.1);
 }
 /* ───────────────────────────────
-   🧩 FIX STUCK BLACK BAR ABOVE APPEARANCE PANEL
-─────────────────────────────── */
-.settings-container,
-.dropdown,
-#appearance-panel {
-  position: relative;
-  overflow: visible !important;
-}
-
-/* Prevent ghost header bar */
-#appearance-panel::before {
-  content: none !important;
-}
-
-/* Ensure dropdown background transitions cleanly */
-#settings-dropdown,
-#appearance-panel {
-  background: #232A2E; /* dark mode background */
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-}
-
-/* Light mode background fix */
-body.light-mode #settings-dropdown,
-body.light-mode #appearance-panel {
-  background: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-}
-/* ───────────────────────────────
    ⚡ UNIVERSAL UI ELEMENTS
 ─────────────────────────────── */
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -990,6 +961,7 @@ select {
 .error.shake {
   animation: softShake 0.4s ease;
 }
+
 
 
 
