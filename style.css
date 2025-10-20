@@ -387,7 +387,67 @@ svg {
 }
 
 .modal h3 { margin-bottom: 8px; color: #E9F2F0; }
+/* ───────────────────────────────
+   💰 MODAL INPUT STYLING (Saavr Style)
+─────────────────────────────── */
+.modal input, 
+.modal select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #334046;
+  background: #1F262A;
+  color: #E9F2F0;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+}
 
+.modal input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.modal input:focus,
+.modal select:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 6px rgba(80,195,163,0.45);
+  outline: none;
+  background: #222B30;
+}
+
+/* Label styling inside modals */
+.modal label {
+  font-weight: 600;
+  color: var(--mint);
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Buttons inside modals */
+.modal .btn.primary {
+  background: var(--mint);
+  color: #0D2C25;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(80,195,163,0.25);
+  transition: all 0.25s ease;
+}
+
+.modal .btn.primary:hover {
+  background: #66D0B1;
+  box-shadow: 0 0 16px rgba(80,195,163,0.35);
+}
+
+.modal .btn.ghost {
+  color: var(--mint);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.modal .btn.ghost:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
 /* ───────────────────────────────
    🔆 LIGHT MODE OVERRIDES
 ─────────────────────────────── */
@@ -534,6 +594,7 @@ body.light-mode nav button.active {
   font-size: 13px;
   margin-top: 6px;
 }
+
 
 
 
