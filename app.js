@@ -826,6 +826,14 @@ function updateThemeCheckmark(theme) {
 }
 function applyTheme(mode) {
   const root = document.documentElement;
+     // Enable transition temporarily for smoothness
+  document.body.classList.add("theme-transition");
+
+  // Delay removing class after transition ends
+  clearTimeout(window._themeTimeout);
+  window._themeTimeout = setTimeout(() => {
+    document.body.classList.remove("theme-transition");
+  }, 400);
   if (mode === "light") {
     root.style.setProperty("--dark", "#F2F4F6");
     root.style.setProperty("--card", "#FFFFFF");
@@ -922,6 +930,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
