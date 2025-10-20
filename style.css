@@ -207,115 +207,6 @@ header h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 /* ───────────────────────────────
-   🧩 SETTINGS PANEL FIX — Clickable + Smooth Switch
-─────────────────────────────── */
-.settings-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #232A2E;
-  border-radius: 12px;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-6px);
-  z-index: 0;
-}
-
-.settings-panel.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-  z-index: 2;
-}
-
-.settings-panel.hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-6px);
-  z-index: 1;
-}
-
-/* Keep dropdown shell consistent */
-#settings-dropdown {
-  position: absolute;
-  top: 34px;
-  right: 0;
-  width: 240px;
-  background: transparent;
-  border: none;
-  padding: 0;
-  overflow: hidden;
-}
-/* ───────────────────────────────
-   🎨 APPEARANCE SUB-PANEL (MATCH MAIN SETTINGS)
-─────────────────────────────── */
-#appearance-panel {
-  background: #232A2E;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-  width: 240px;
-  padding: 0;
-  position: absolute;
-  top: 34px;
-  right: 0;
-  z-index: 35;
-  animation: fadeIn 0.25s ease forwards;
-}
-
-/* Reuse dropdown-section styling for consistency */
-#appearance-panel .dropdown-section {
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-#appearance-panel .dropdown-section:hover {
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-1px);
-}
-
-#appearance-panel .divider {
-  height: 1px;
-  background: var(--line);
-  margin: 4px 0;
-  opacity: 0.8;
-}
-
-/* Theme dots */
-#appearance-panel .theme-dot {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  margin-right: 8px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-}
-
-/* Checkmark style */
-#appearance-panel .checkmark {
-  font-size: 16px;
-  color: var(--mint);
-  font-weight: 700;
-  opacity: 0.85;
-}
-
-/* Back button matches top-level links */
-#appearance-panel #back-to-main {
-  font-weight: 600;
-  color: var(--mint);
-  font-size: 14px;
-}
-
-#appearance-panel #back-to-main:hover {
-  background: rgba(80, 195, 163, 0.1);
-}
-
-/* ───────────────────────────────
    ⚡ UNIVERSAL UI ELEMENTS
 ─────────────────────────────── */
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -1005,6 +896,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
