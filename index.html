@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saavr App v3.6</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Tooltip -->
+  <div id="tooltip" class="tooltip"></div>
+
+  <!-- LOGIN -->
+  <section id="login">
+    <div class="panel">
+      <h1>Saavr</h1>
+      <p style="color:var(--muted);margin-top:6px;">Sign in to manage your budget and accounts</p>
+      <div style="height:10px;"></div>
+      <label for="u">Username</label>
+      <input id="u" type="text" placeholder="admin" autocomplete="username">
+      <div style="height:8px;"></div>
+      <label for="p">Password</label>
+      <input id="p" type="password" placeholder="••••" autocomplete="current-password">
+      <p id="login-err" class="error hidden">Invalid username or password.</p>
+      <div style="height:10px;"></div>
+      <button id="login-btn" class="btn primary" style="width:100%;">Login</button>
+      <p style="color:var(--muted);margin-top:8px;">Demo → <b>admin</b> / <b>1234</b></p>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="hidden">
+    <header>
+      <h1>Dashboard</h1>
+      <div class="settings-container">
+        <button id="settings-btn" class="settings-btn">⚙️</button>
+        <div id="settings-dropdown" class="dropdown hidden">
+          <!-- MAIN SETTINGS PANEL -->
+          <div id="main-settings" class="settings-panel active">
+            <div class="dropdown-section appearance-option">
+              <h4>Appearance</h4>
+              <p id="open-appearance">Theme</p>
+            </div>
+            <div class="divider"></div>
+
+            <div class="dropdown-section">
+              <h4>Account & Profile</h4>
+              <p>Manage your display name, avatar, and privacy settings</p>
+            </div>
+            <div class="divider"></div>
+
+            <div class="dropdown-section">
+              <h4>Notifications</h4>
+              <p>Budget summaries, XP updates, and alerts</p>
+            </div>
+            <div class="divider"></div>
+
+            <div class="dropdown-section">
+              <h4>Support</h4>
+              <p>Contact support or send feedback</p>
+            </div>
+          </div>
+
+          <!-- APPEARANCE SUB-PANEL -->
+          <div id="appearance-panel" class="settings-panel hidden">
+            <div class="dropdown-section" id="back-to-main">← Back</div>
+            <div class="divider"></div>
+
+            <div class="dropdown-section theme-choice" data-theme="dark">
+              <div class="row">
+                <div class="theme-dot" style="background:#1E2428;"></div>
+                <span>Dark Mode</span>
+                <span class="checkmark right hidden">✓</span>
+              </div>
+            </div>
+
+            <div class="dropdown-section theme-choice" data-theme="light">
+              <div class="row">
+                <div class="theme-dot" style="background:#F0F0F0;border:1px solid #ccc;"></div>
+                <span>Light Mode</span>
+                <span class="checkmark right hidden">✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- 🟢 XP / Level Card -->
+      <div class="card" id="xp-card">
+        <div class="row" style="align-items:center;gap:16px;">
+          <div class="profile-pic"></div>
+          <div style="flex:1;">
+            <div class="level-title">Level <span id="user-level">1</span></div>
+            <div class="progress-wrap xp-progress">
+              <div id="xp-bar" class="progress-fill" style="width:70%;background:var(--mint);"></div>
+            </div>
+            <div id="xp-label" class="xp-label">350 / 500 XP</div>
+          </div>
+        </div>
+        <div class="badge-row">
+          <div class="badge-circle"></div>
+          <div class="badge-circle"></></div>
+          <div class="badge-circle"></div>
+          <div class="badge-circle"></div>
+          <div class="badge-circle"></div>
+        </div>
+      </div>
+
+      <!-- 🟣 Accounts Card -->
+      <div class="card">
+        <div class="row">
+          <h2>Accounts</h2>
+          <button class="btn ghost right" onclick="showPage('accounts')">Open Accounts →</button>
+        </div>
+        <p style="color:var(--muted);margin-top:6px;">Manage transactions and categories in Accounts & Budget tabs.</p>
+      </div>
+
+      <!-- 🟡 Budget Card -->
+      <div class="card">
+        <div class="row" style="align-items:baseline;">
+          <h2>Budget <span id="dash-month" style="color:#8fd6c3;font-weight:700;"></span></h2>
+          <button class="btn ghost right" onclick="showPage('budget')">View Budget →</button>
+        </div>
+        <div class="donut-wrap">
+          <svg id="dash-donut" width="260" height="260"></svg>
+          <div id="dash-center" class="donut-center">$0</div>
+        </div>
+        <div class="progress-wrap">
+          <div id="dash-progress" class="progress-fill" style="width:0%;"></div>
+        </div>
+        <div id="dash-progress-label" class="progress-label">$0 / $0 spent</div>
+      </div>
+    </div>
+
+    <nav>
+      <button class="active" onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button onclick="showPage('budget')">💰 Budget</button>
+      <button onclick="showPage('accounts')">🏦 Accounts</button>
+      <button disabled>📈 Insights</button>
+    </nav>
+  </section>
+
+  <!-- BUDGET -->
+  <section id="budget" class="hidden">
+    <header><h1>Budget</h1></header>
+    <div class="container" id="budget-container"></div>
+    <nav>
+      <button onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button class="active" onclick="showPage('budget')">💰 Budget</button>
+      <button onclick="showPage('accounts')">🏦 Accounts</button>
+      <button disabled>📈 Insights</button>
+    </nav>
+  </section>
+
+  <!-- ACCOUNTS -->
+  <section id="accounts" class="hidden">
+    <header><h1>Accounts</h1>
+      <button class="btn outline right" onclick="openTxModal()">+ Add Transaction</button>
+    </header>
+    <div class="container" id="accounts-container"></div>
+    <nav>
+      <button onclick="showPage('dashboard')">🏠 Dashboard</button>
+      <button onclick="showPage('budget')">💰 Budget</button>
+      <button class="active" onclick="showPage('accounts')">🏦 Accounts</button>
+      <button disabled>📈 Insights</button>
+    </nav>
+  </section>
+
+  <!-- Modals -->
+  <div id="modals"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
