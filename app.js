@@ -793,6 +793,7 @@ function applyTheme(mode) {
     root.style.setProperty("--shadow", "rgba(0,0,0,0.1)");
     root.style.setProperty("--mint", "#2AA382");
     document.body.style.color = "#1B2328";
+    document.body.classList.add("light-mode");
   } else {
     root.style.setProperty("--dark", "#1E2428");
     root.style.setProperty("--card", "#252C31");
@@ -802,6 +803,7 @@ function applyTheme(mode) {
     root.style.setProperty("--shadow", "rgba(0,0,0,0.35)");
     root.style.setProperty("--mint", "#50C3A3");
     document.body.style.color = "#E9F2F0";
+    document.body.classList.remove("light-mode");
   }
 }
 
@@ -878,6 +880,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
