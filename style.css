@@ -632,6 +632,15 @@ body.light-mode nav button.active {
   font-size: 13px;
   margin-top: 6px;
 }
+/* final safeguard - prevent mint glow in light mode */
+body.light-mode .card {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+  border-color: #D9E1E6 !important;
+}
+body.light-mode .card:hover {
+  box-shadow: 0 0 14px rgba(0,0,0,0.15) !important;
+  border-color: #D9E1E6 !important;
+}
 
 
 
