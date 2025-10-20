@@ -203,23 +203,18 @@ header h1 {
 .dropdown-section:hover + .divider { opacity: 0.4; background: rgba(255,255,255,0.06); }
 
 /* ───────────────────────────────
-   🎨 APPEARANCE SUB-PANEL STYLING
+   🎨 APPEARANCE SUB-PANEL (INLINE WITH SETTINGS)
 ─────────────────────────────── */
 #appearance-panel {
-  background: #232A2E;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-  padding: 10px 0;
-  width: 240px;
-  z-index: 35;
-  position: absolute;
-  top: 34px;
-  right: 0;
-  animation: fadeIn 0.25s ease forwards;
+  display: none;
+  background: transparent;
+  padding: 0;
 }
 
-/* Individual rows */
+#appearance-panel.active {
+  display: block;
+}
+
 #appearance-panel .dropdown-section {
   display: flex;
   align-items: center;
@@ -243,7 +238,6 @@ header h1 {
   opacity: 0.8;
 }
 
-/* Theme dots */
 #appearance-panel .theme-dot {
   width: 18px;
   height: 18px;
@@ -252,7 +246,6 @@ header h1 {
   box-shadow: 0 0 4px rgba(0,0,0,0.4);
 }
 
-/* Checkmark for active theme */
 #appearance-panel .checkmark {
   font-size: 16px;
   color: var(--mint);
@@ -260,7 +253,6 @@ header h1 {
   opacity: 0.85;
 }
 
-/* Back link */
 #appearance-panel #back-to-main {
   font-weight: 600;
   color: var(--mint);
@@ -964,6 +956,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
