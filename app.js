@@ -413,7 +413,71 @@ function updateThemeCheckmark(theme) {
   document.querySelectorAll(".theme-choice .checkmark").forEach(c => c.classList.add("hidden"));
   document.querySelector(`.theme-choice[data-theme="${theme}"] .checkmark`)?.classList.remove("hidden");
 }
+function renderCategoryList(){
+  const list = $("#cat-list");
+  const empty = $("#no-cats");
+  if(!list) return;
+  list.innerHTML="";
+  if(!categories.length){
+    if(empty) empty.classList.remove("hidden");
+    return;
+  }
+  if(empty) empty.classList.add("hidden");
 
+  categories.forEach(c=>{
+    const actual = actualByCategory(c.id, selectedMonth);
+    const item = document.createElement("div");
+    item.className = "cat-item";
+    if (actual > (Number(c.budget) || 0)) {
+      item.classList.add("overspent");
+    }
+
+    const sw = document.createElement("div");
+    sw.className = "swatch";
+    sw.style.background = c.color;
+
+    const mid = document.createElement("div");
+    const nm = document.createElement("div");
+    nm.className = "cat-name";
+    nm.textContent = c.name;
+
+    const details = document.createElement("div");
+    details.style.color = "var(--muted)";
+    details.style.fontSize = "12px";
+    details.textContent = `Budget: $${(c.budget||0).toLocaleString()} · Actual (${monthLabel(selectedMonth)}): $${(actual||0).toLocaleString()}`;
+
+    mid.appendChild(nm);
+    mid.appendChild(details);
+
+    const right = document.createElement("div");
+    const amt = document.createElement("div");
+    amt.className = "cat-amount";
+    amt.textContent = `$${(c.budget||0).toLocaleString()}`;
+
+    const actions = document.createElement("div");
+    actions.className = "cat-actions";
+
+    const b1 = document.createElement("button");
+    b1.className = "btn ghost small";
+    b1.textContent = "✏️ Edit";
+    b1.onclick = ()=>openEdit(c.id);
+
+    const b2 = document.createElement("button");
+    b2.className = "btn ghost small";
+    b2.textContent = "🗑️ Delete";
+    b2.onclick = ()=>delCategory(c.id);
+
+    actions.appendChild(b1);
+    actions.appendChild(b2);
+    right.appendChild(amt);
+    right.appendChild(actions);
+
+    item.appendChild(sw);
+    item.appendChild(mid);
+    item.appendChild(right);
+    list.appendChild(item);
+  });
+}
 /************ RENDER ALL ************/
 function renderAll() {
   const addSel = $("#cat-select");
@@ -425,8 +489,9 @@ function renderAll() {
       addSel.appendChild(o);
     });
   }
-  renderXP(); renderTxList(); drawDonuts(); renderDashboardProgress(); renderBudgetProgress(); renderIncomeProgress();
+  renderCategoryList();renderXP(); renderTxList(); drawDonuts(); renderDashboardProgress(); renderBudgetProgress(); renderIncomeProgress();populateTxCategoryDropdown();
 }
+
 
 /************ PROGRESS BARS ************/
 function renderDashboardProgress() {
@@ -456,3 +521,4 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
