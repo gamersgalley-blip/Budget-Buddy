@@ -840,11 +840,7 @@ body.light-mode .modal select:focus {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-6px); }
   40%, 80% { transform: translateX(6px); }
-}
-@keyframes fadeOutError {
-  from { opacity: 1; }
-  to { opacity: 0; transform: translateY(-4px); }
-}
+
 /* final safeguard - prevent mint glow in light mode */
 body.light-mode .card {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
@@ -875,6 +871,7 @@ select {
     fill 0.4s ease,
     stroke 0.4s ease;
 }
+
 
 
 
