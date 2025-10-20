@@ -182,28 +182,6 @@ header h1 {
   animation: fadeIn 0.2s ease forwards;
 }
 
-/* Prevent ghost bar / clipping issue */
-.settings-container {
-  overflow: visible;
-}
-
-.dropdown,
-#appearance-panel {
-  top: auto;
-  bottom: auto;
-  margin-top: 0;
-}
-
-.dropdown::before,
-.dropdown::after {
-  content: none !important;
-}
-
-/* Force no shadow overlap above dropdown */
-.dropdown {
-  overflow: hidden;
-}
-
 .dropdown-section {
   padding: 10px 14px;
   cursor: pointer;
@@ -223,66 +201,6 @@ header h1 {
 }
 
 .dropdown-section:hover + .divider { opacity: 0.4; background: rgba(255,255,255,0.06); }
-
-/* ───────────────────────────────
-   🎨 APPEARANCE SUB-PANEL (INLINE WITH SETTINGS)
-─────────────────────────────── */
-#appearance-panel {
-  display: none;
-  background: transparent;
-  padding: 0;
-}
-
-#appearance-panel.active {
-  display: block;
-}
-
-#appearance-panel .dropdown-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  cursor: pointer;
-  color: #E9F2F0;
-  font-size: 14px;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-#appearance-panel .dropdown-section:hover {
-  background: rgba(255,255,255,0.05);
-  transform: translateY(-1px);
-}
-
-#appearance-panel .divider {
-  height: 1px;
-  background: var(--line);
-  margin: 4px 0;
-  opacity: 0.8;
-}
-
-#appearance-panel .theme-dot {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  margin-right: 8px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.4);
-}
-
-#appearance-panel .checkmark {
-  font-size: 16px;
-  color: var(--mint);
-  font-weight: 700;
-  opacity: 0.85;
-}
-
-#appearance-panel #back-to-main {
-  font-weight: 600;
-  color: var(--mint);
-}
-
-#appearance-panel #back-to-main:hover {
-  background: rgba(80,195,163,0.1);
-}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
@@ -978,6 +896,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
