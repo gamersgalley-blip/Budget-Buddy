@@ -207,22 +207,19 @@ header h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 /* ───────────────────────────────
-   🧩 SETTINGS PANEL FIX (removes ghost bar)
+   🧩 SETTINGS PANEL FIX (no overlap or ghost bar)
 ─────────────────────────────── */
 .settings-panel {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  background: inherit;
-  border: none;
+  background: #232A2E;
+  border-radius: 12px;
   transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.settings-panel.hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-8px);
+  transform: translateY(-6px);
 }
 
 .settings-panel.active {
@@ -231,12 +228,21 @@ header h1 {
   transform: translateY(0);
 }
 
-/* make sure only one panel (main or appearance) is visible */
-#main-settings,
-#appearance-panel {
+.settings-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+}
+
+/* Keep dropdown container stable and same height */
+#settings-dropdown {
   position: absolute;
-  inset: 0;
-  background: inherit;
+  top: 34px;
+  right: 0;
+  width: 240px;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 /* ───────────────────────────────
    🎨 APPEARANCE SUB-PANEL (MATCH MAIN SETTINGS)
@@ -995,6 +1001,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
