@@ -721,6 +721,53 @@ body.light-mode .cat-item:hover {
   transition: all 0.25s ease;
 }
 /* ───────────────────────────────
+   ⚙️ LIGHT MODE SETTINGS DROPDOWN
+─────────────────────────────── */
+body.light-mode .dropdown,
+body.light-mode .settings-panel {
+  background: #FFFFFF;
+  border: 1px solid #D9E1E6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+body.light-mode .dropdown-section {
+  background: transparent;
+  color: #1B2328;
+}
+
+body.light-mode .dropdown-section h4 {
+  color: var(--mint);
+}
+
+body.light-mode .dropdown-section p {
+  color: #4B555C;
+}
+
+body.light-mode .dropdown-section:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+body.light-mode .divider {
+  background: #E2E8EC;
+}
+
+body.light-mode .settings-btn {
+  color: #4B555C;
+}
+
+body.light-mode .settings-btn:hover {
+  color: var(--mint);
+}
+
+/* Theme dots & checkmark readability */
+body.light-mode .theme-dot {
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+}
+
+body.light-mode .checkmark {
+  color: var(--mint);
+}
+/* ───────────────────────────────
    🧭 BOTTOM NAVIGATION
 ─────────────────────────────── */
 nav {
@@ -946,6 +993,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
