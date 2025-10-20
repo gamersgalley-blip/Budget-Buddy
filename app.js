@@ -194,32 +194,37 @@ function presetFor(name) { return PRESETS.find(p => p.name === name) || PRESETS[
 function addCategory() {
   const msg = $("#add-error");
   msg.textContent = "";
-  msg.classList.add("hidden"); // reset visibility
+  msg.classList.remove("visible");
 
   const name = $("#cat-select").value;
   const budget = Number($("#cat-amount").value);
   const inc = Number(localStorage.getItem(STORAGE.income) || 0);
 
+  // Helper to trigger error animation
+  function showError(text) {
+    msg.textContent = text;
+    msg.classList.add("visible");
+    msg.style.animation = "none"; // restart shake animation
+    msg.offsetHeight; // trigger reflow
+    msg.style.animation = "";
+  }
+
   if (!name || !(budget > 0)) {
-    msg.textContent = "Choose a category and enter a positive budget.";
-    msg.classList.remove("hidden");
+    showError("Choose a category and enter a positive budget.");
     return;
   }
 
   if (!(inc > 0)) {
-    msg.textContent = "Please set your monthly income first.";
-    msg.classList.remove("hidden");
+    showError("Please set your monthly income first.");
     return;
   }
 
   const totalBudget = categories.reduce((s, c) => s + (Number(c.budget) || 0), 0);
   if (totalBudget + budget > inc) {
-    msg.textContent = `Total budget exceeds income of $${inc.toLocaleString()}.`;
-    msg.classList.remove("hidden");
+    showError(`Total budget exceeds income of $${inc.toLocaleString()}.`);
     return;
   }
 
-  // Proceed if all validations pass
   const p = presetFor(name);
   const existing = categories.find(c => c.name === name);
   if (existing) {
@@ -230,7 +235,7 @@ function addCategory() {
   }
 
   $("#cat-amount").value = "";
-  msg.classList.add("hidden");
+  msg.classList.remove("visible");
   save();
 }
 function renderCategoryList() {
@@ -901,6 +906,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
