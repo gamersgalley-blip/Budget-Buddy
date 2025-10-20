@@ -541,6 +541,26 @@ body.light-mode .progress-label {
   color: #4B555C !important; /* keep muted but readable */
 }
 /* ───────────────────────────────
+   🧭 LIGHT MODE HEADER FIX
+─────────────────────────────── */
+body.light-mode header {
+  background: #FFFFFF;
+  border-bottom: 1px solid #D9E1E6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode header h1 {
+  color: #1C2B33; /* same as titles */
+}
+
+body.light-mode .settings-btn {
+  color: #4B555C;
+}
+
+body.light-mode .settings-btn:hover {
+  color: var(--mint);
+}
+/* ───────────────────────────────
    🧭 BOTTOM NAVIGATION
 ─────────────────────────────── */
 nav {
@@ -667,6 +687,7 @@ body.light-mode .card:hover {
   box-shadow: 0 0 14px rgba(0,0,0,0.15) !important;
   border-color: #D9E1E6 !important;
 }
+
 
 
 
