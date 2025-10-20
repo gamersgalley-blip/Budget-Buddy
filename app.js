@@ -194,38 +194,32 @@ function presetFor(name) { return PRESETS.find(p => p.name === name) || PRESETS[
 function addCategory() {
   const msg = $("#add-error");
   msg.textContent = "";
-  msg.classList.remove("visible", "shake");
+  msg.classList.add("hidden"); // reset visibility
 
   const name = $("#cat-select").value;
   const budget = Number($("#cat-amount").value);
   const inc = Number(localStorage.getItem(STORAGE.income) || 0);
 
-  // 🔴 Validation: missing category or budget
   if (!name || !(budget > 0)) {
     msg.textContent = "Choose a category and enter a positive budget.";
-    msg.classList.add("visible", "shake");
-    setTimeout(() => msg.classList.remove("shake"), 400);
+    msg.classList.remove("hidden");
     return;
   }
 
-  // ⚠️ Validation: no income set
   if (!(inc > 0)) {
     msg.textContent = "Please set your monthly income first.";
-    msg.classList.add("visible", "shake");
-    setTimeout(() => msg.classList.remove("shake"), 400);
+    msg.classList.remove("hidden");
     return;
   }
 
-  // ⚠️ Validation: total budget exceeds income
   const totalBudget = categories.reduce((s, c) => s + (Number(c.budget) || 0), 0);
   if (totalBudget + budget > inc) {
     msg.textContent = `Total budget exceeds income of $${inc.toLocaleString()}.`;
-    msg.classList.add("visible", "shake");
-    setTimeout(() => msg.classList.remove("shake"), 400);
+    msg.classList.remove("hidden");
     return;
   }
 
-  // ✅ Passed validation
+  // Proceed if all validations pass
   const p = presetFor(name);
   const existing = categories.find(c => c.name === name);
   if (existing) {
@@ -236,7 +230,7 @@ function addCategory() {
   }
 
   $("#cat-amount").value = "";
-  msg.classList.remove("visible");
+  msg.classList.add("hidden");
   save();
 }
 function renderCategoryList() {
@@ -786,10 +780,10 @@ function initAppearancePanel() {
 
   openBtn.addEventListener("click", () => {
     mainPanel.classList.add("hidden");
-    appearancePanel.classList.remove("active");
+    appearancePanel.classList.remove("hidden");
   });
   backBtn.addEventListener("click", () => {
-    appearancePanel.classList.add("active");
+    appearancePanel.classList.add("hidden");
     mainPanel.classList.remove("hidden");
   });
   choices.forEach(choice => {
