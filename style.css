@@ -202,6 +202,15 @@ header h1 {
 
 .dropdown-section:hover + .divider { opacity: 0.4; background: rgba(255,255,255,0.06); }
 
+#appearance-panel {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  width: 240px;
+  z-index: 30;
+  animation: fadeIn 0.2s ease forwards;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
@@ -896,6 +905,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
