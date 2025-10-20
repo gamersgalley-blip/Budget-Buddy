@@ -337,7 +337,17 @@ header h1 {
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 .tooltip.visible { opacity: 1; transform: translateY(0); }
+svg {
+  position: relative;
+  z-index: 1;
+  pointer-events: all;
+}
 
+.tooltip {
+  z-index: 9999 !important;
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
 /* ───────────────────────────────
    🪟 MODALS
 ─────────────────────────────── */
@@ -503,4 +513,5 @@ body.light-mode nav button.active {
   font-size: 13px;
   margin-top: 6px;
 }
+
 
