@@ -194,31 +194,38 @@ function presetFor(name) { return PRESETS.find(p => p.name === name) || PRESETS[
 function addCategory() {
   const msg = $("#add-error");
   msg.textContent = "";
-  msg.classList.remove("visible");
+  msg.classList.remove("visible", "shake");
 
   const name = $("#cat-select").value;
   const budget = Number($("#cat-amount").value);
   const inc = Number(localStorage.getItem(STORAGE.income) || 0);
 
+  // 🔴 Validation: missing category or budget
   if (!name || !(budget > 0)) {
     msg.textContent = "Choose a category and enter a positive budget.";
-    msg.classList.add("visible");
+    msg.classList.add("visible", "shake");
+    setTimeout(() => msg.classList.remove("shake"), 400);
     return;
   }
 
+  // ⚠️ Validation: no income set
   if (!(inc > 0)) {
     msg.textContent = "Please set your monthly income first.";
-    msg.classList.add("visible");
+    msg.classList.add("visible", "shake");
+    setTimeout(() => msg.classList.remove("shake"), 400);
     return;
   }
 
+  // ⚠️ Validation: total budget exceeds income
   const totalBudget = categories.reduce((s, c) => s + (Number(c.budget) || 0), 0);
   if (totalBudget + budget > inc) {
     msg.textContent = `Total budget exceeds income of $${inc.toLocaleString()}.`;
-    msg.classList.add("visible");
+    msg.classList.add("visible", "shake");
+    setTimeout(() => msg.classList.remove("shake"), 400);
     return;
   }
 
+  // ✅ Passed validation
   const p = presetFor(name);
   const existing = categories.find(c => c.name === name);
   if (existing) {
@@ -900,6 +907,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
