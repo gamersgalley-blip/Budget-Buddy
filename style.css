@@ -385,3 +385,56 @@ body.light-mode .progress-wrap {
   background: rgba(0,0,0,0.05);
   border-color: #D7DEE4;
 }
+/* ───────────────────────────────
+   🧭 LOGIN PAGE LAYOUT
+─────────────────────────────── */
+#login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--dark);
+}
+
+#login .panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 360px;
+  text-align: left;
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+#login h1 {
+  color: var(--mint);
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+#login input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #1F262A;
+  color: #E9F2F0;
+  font-size: 14px;
+}
+
+#login input:focus {
+  outline: none;
+  border-color: var(--mint);
+}
+
+#login button {
+  margin-top: 14px;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  margin-top: 6px;
+}
