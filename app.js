@@ -233,7 +233,6 @@ function addCategory() {
   msg.classList.add("hidden");
   save();
 }
-}
 function renderCategoryList() {
   const list = $("#cat-list");
   const empty = $("#no-cats");
@@ -902,6 +901,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
