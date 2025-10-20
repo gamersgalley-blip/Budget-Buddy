@@ -801,11 +801,11 @@ function initAppearancePanel() {
 
   openBtn.addEventListener("click", () => {
     mainPanel.classList.add("hidden");
-    appearancePanel.classList.remove("active");
+    appearancePanel.classList.remove("hidden");
   });
   backBtn.addEventListener("click", () => {
     appearancePanel.classList.add("hidden");
-    mainPanel.classList.remove("active");
+    mainPanel.classList.remove("hidden");
   });
   choices.forEach(choice => {
     choice.addEventListener("click", () => {
@@ -930,6 +930,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
