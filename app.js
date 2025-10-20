@@ -223,11 +223,6 @@ function addCategory() {
     }, 5000);
   }
 
-  // 🧩 Validations
-  const name = $("#cat-select").value;
-  const budget = Number($("#cat-amount").value);
-  const inc = Number(localStorage.getItem(STORAGE.income) || 0);
-
   if (!name || !(budget > 0)) {
     showError("Choose a category and enter a positive budget.");
     return;
@@ -926,6 +921,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
