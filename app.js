@@ -221,9 +221,9 @@ function renderCategoryList() {
 
   empty?.classList.add("hidden");
   categories.forEach(c => {
-    const actual = transactions
-      .filter(t => ymFromDateStr(t.date) === selectedMonth && t.categoryId === c.id)
-      .reduce((s, t) => s + (Number(t.amount) || 0), 0);
+const actual = transactions
+  .filter(t => (ymFromDateStr(t.date) === selectedMonth || !t.date) && t.categoryId === c.id)
+  .reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
     const item = document.createElement("div");
     item.className = "cat-item";
@@ -871,4 +871,5 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
