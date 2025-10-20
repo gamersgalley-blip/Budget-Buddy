@@ -204,10 +204,29 @@ function addCategory() {
   function showError(text) {
     msg.textContent = text;
     msg.classList.add("visible");
-    msg.style.animation = "none"; // restart shake animation
+
+    // Restart shake animation
+    msg.style.animation = "none";
     msg.offsetHeight; // trigger reflow
-    msg.style.animation = "";
+    msg.style.animation = "shake 0.4s ease, fadeInError 0.3s ease";
+
+    // Clear any previous timers
+    clearTimeout(msg._timeout);
+
+    // Auto-hide after 5 seconds
+    msg._timeout = setTimeout(() => {
+      msg.style.animation = "fadeOutError 0.4s ease forwards";
+      setTimeout(() => {
+        msg.classList.remove("visible");
+        msg.style.animation = "";
+      }, 400);
+    }, 5000);
   }
+
+  // 🧩 Validations
+  const name = $("#cat-select").value;
+  const budget = Number($("#cat-amount").value);
+  const inc = Number(localStorage.getItem(STORAGE.income) || 0);
 
   if (!name || !(budget > 0)) {
     showError("Choose a category and enter a positive budget.");
@@ -225,6 +244,7 @@ function addCategory() {
     return;
   }
 
+  // ✅ Add or update category
   const p = presetFor(name);
   const existing = categories.find(c => c.name === name);
   if (existing) {
@@ -906,6 +926,7 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
 
