@@ -524,6 +524,23 @@ body.light-mode nav {
   border-color: #CCD5DA;
 }
 /* ───────────────────────────────
+   🧭 LIGHT MODE TEXT CONTRAST FIXES
+─────────────────────────────── */
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode .level-title {
+  color: #1C2B33 !important; /* stronger dark gray for contrast */
+}
+
+body.light-mode .card h2 {
+  color: #1C2B33 !important; /* ensure card titles are visible */
+}
+
+body.light-mode .xp-label,
+body.light-mode .progress-label {
+  color: #4B555C !important; /* keep muted but readable */
+}
+/* ───────────────────────────────
    🧭 BOTTOM NAVIGATION
 ─────────────────────────────── */
 nav {
@@ -650,6 +667,7 @@ body.light-mode .card:hover {
   box-shadow: 0 0 14px rgba(0,0,0,0.15) !important;
   border-color: #D9E1E6 !important;
 }
+
 
 
 
