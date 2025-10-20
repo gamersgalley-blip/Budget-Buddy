@@ -704,6 +704,40 @@ body.light-mode nav button.active {
   border-color: var(--mint);
 }
 /* ───────────────────────────────
+   🧾 LIGHT MODE — MODAL HEADER FIXES
+─────────────────────────────── */
+body.light-mode .modal {
+  background: #FFFFFF;
+  border: 1px solid #D9E1E6;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+}
+
+body.light-mode .modal h3 {
+  color: #1B2328;
+  border-bottom: 1px solid #E2E8EC;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+body.light-mode .modal label {
+  color: #333E44;
+}
+
+body.light-mode .modal input,
+body.light-mode .modal select {
+  background: #F8FAFB;
+  border: 1px solid #D9E1E6;
+  color: #1B2328;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+body.light-mode .modal input:focus,
+body.light-mode .modal select:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 6px rgba(80,195,163,0.35);
+  background: #FFFFFF;
+}
+/* ───────────────────────────────
    🧭 LOGIN PAGE LAYOUT
 ─────────────────────────────── */
 #login {
@@ -786,6 +820,7 @@ select {
     fill 0.4s ease,
     stroke 0.4s ease;
 }
+
 
 
 
