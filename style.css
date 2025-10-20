@@ -206,6 +206,56 @@ header h1 {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Settings Panels (main + appearance) */
+.settings-panel {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #232A2E;
+  border-radius: 12px;
+}
+
+.settings-panel.hidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.settings-panel.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Theme dots + hover effects */
+.theme-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.theme-choice:hover {
+  background: rgba(255,255,255,0.05);
+  transition: background 0.15s ease;
+}
+
+.theme-choice .checkmark {
+  font-size: 14px;
+  color: var(--mint);
+}
+
+/* Back button */
+#back-to-main {
+  font-weight: 600;
+  color: var(--mint);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+#back-to-main:hover { color: #8fffd9; }
 /* ───────────────────────────────
    ⚡ UNIVERSAL UI ELEMENTS
 ─────────────────────────────── */
@@ -896,6 +946,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
