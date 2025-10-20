@@ -866,6 +866,18 @@ select {
     fill 0.4s ease,
     stroke 0.4s ease;
 }
+/* ───────────────────────────────
+   🚨 ERROR SHAKE ANIMATION
+─────────────────────────────── */
+@keyframes softShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.error.shake {
+  animation: softShake 0.4s ease;
+}
 
 
 
