@@ -207,6 +207,38 @@ header h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 /* ───────────────────────────────
+   🧩 SETTINGS PANEL FIX (removes ghost bar)
+─────────────────────────────── */
+.settings-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: inherit;
+  border: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.settings-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.settings-panel.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* make sure only one panel (main or appearance) is visible */
+#main-settings,
+#appearance-panel {
+  position: absolute;
+  inset: 0;
+  background: inherit;
+}
+/* ───────────────────────────────
    🎨 APPEARANCE SUB-PANEL (MATCH MAIN SETTINGS)
 ─────────────────────────────── */
 #appearance-panel {
@@ -963,6 +995,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
