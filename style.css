@@ -561,6 +561,61 @@ body.light-mode .settings-btn:hover {
   color: var(--mint);
 }
 /* ───────────────────────────────
+   ✏️ LIGHT MODE INPUTS, SELECTS, AND MODALS
+─────────────────────────────── */
+body.light-mode input[type="text"],
+body.light-mode input[type="number"],
+body.light-mode input[type="date"],
+body.light-mode select {
+  background: #FFFFFF;
+  border: 1px solid #C8D0D6;
+  color: #1B2328;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+body.light-mode input::placeholder {
+  color: #7A858C;
+}
+
+body.light-mode input:focus,
+body.light-mode select:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 6px rgba(80,195,163,0.25);
+  background: #FAFBFC;
+  outline: none;
+}
+
+/* Modal backgrounds */
+body.light-mode .modal {
+  background: #FFFFFF;
+  border: 1px solid #D9E1E6;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+}
+
+body.light-mode .modal label {
+  color: #2E3A40;
+}
+
+body.light-mode .modal .btn.primary {
+  background: var(--mint);
+  color: white;
+  box-shadow: 0 0 8px rgba(80,195,163,0.25);
+}
+
+body.light-mode .modal .btn.primary:hover {
+  background: #66D0B1;
+  box-shadow: 0 0 12px rgba(80,195,163,0.35);
+}
+
+body.light-mode .modal .btn.ghost {
+  color: #4B555C;
+}
+
+body.light-mode .modal .btn.ghost:hover {
+  color: var(--mint);
+  text-decoration: underline;
+}
+/* ───────────────────────────────
    🧭 BOTTOM NAVIGATION
 ─────────────────────────────── */
 nav {
@@ -687,6 +742,7 @@ body.light-mode .card:hover {
   box-shadow: 0 0 14px rgba(0,0,0,0.15) !important;
   border-color: #D9E1E6 !important;
 }
+
 
 
 
