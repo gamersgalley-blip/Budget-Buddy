@@ -616,6 +616,29 @@ body.light-mode .modal .btn.ghost:hover {
   text-decoration: underline;
 }
 /* ───────────────────────────────
+   💵 LIGHT MODE CATEGORY TEXT COLORS
+─────────────────────────────── */
+body.light-mode .cat-name {
+  color: #1B2328; /* Deep neutral for readability */
+  font-weight: 600;
+}
+
+body.light-mode .cat-amount {
+  color: #2E3A40; /* Slightly darker than cat-name for contrast */
+  font-weight: 700;
+}
+
+body.light-mode .cat-item.overspent {
+  background: rgba(255, 107, 107, 0.08);
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+body.light-mode .cat-item:hover {
+  background: #F3F5F6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.25s ease;
+}
+/* ───────────────────────────────
    🧭 BOTTOM NAVIGATION
 ─────────────────────────────── */
 nav {
@@ -742,6 +765,7 @@ body.light-mode .card:hover {
   box-shadow: 0 0 14px rgba(0,0,0,0.15) !important;
   border-color: #D9E1E6 !important;
 }
+
 
 
 
