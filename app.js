@@ -348,6 +348,7 @@ function saveTx() {
   localStorage.setItem(STORAGE.tx, JSON.stringify(transactions));
   closeTxModal();
   renderTxList();
+  renderCategoryList();
   drawDonuts();
   renderBudgetProgress();
   renderDashboardProgress();
@@ -871,5 +872,6 @@ window.addEventListener("DOMContentLoaded", () => {
   sessionStorage.getItem(STORAGE.login) === "1" ? showPage("dashboard") : showPage("login");
   renderAll();
 });
+
 
 
