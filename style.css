@@ -324,25 +324,35 @@ header h1 {
 ─────────────────────────────── */
 .tooltip {
   position: fixed;
-  z-index: 1000;
+  z-index: 9999;
   pointer-events: none;
-  background: rgba(22,27,31,0.92);
-  border: 1px solid #3A454C;
+  background: rgba(30,36,40,0.95);
+  border: 1px solid var(--mint);
   border-radius: 10px;
   padding: 10px 12px;
-  box-shadow: 0 10px 20px var(--shadow);
+  box-shadow: 0 6px 18px rgba(80,195,163,0.25);
   color: #EAF2F0;
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
+  mix-blend-mode: normal;
 }
-.tooltip.visible { opacity: 1; transform: translateY(0); }
+.tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Smooth hover fade for donut arcs */
+svg path {
+  transition: stroke 0.25s ease, opacity 0.25s ease;
+}
+svg path:hover {
+  opacity: 0.85;
+}
 svg {
   position: relative;
   z-index: 1;
   pointer-events: all;
 }
-
 .tooltip {
   z-index: 9999 !important;
   pointer-events: none;
@@ -513,5 +523,6 @@ body.light-mode nav button.active {
   font-size: 13px;
   margin-top: 6px;
 }
+
 
 
