@@ -202,6 +202,74 @@ header h1 {
 
 .dropdown-section:hover + .divider { opacity: 0.4; background: rgba(255,255,255,0.06); }
 
+/* ───────────────────────────────
+   🎨 APPEARANCE SUB-PANEL STYLING
+─────────────────────────────── */
+#appearance-panel {
+  background: #232A2E;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  padding: 10px 0;
+  width: 240px;
+  z-index: 35;
+  position: absolute;
+  top: 34px;
+  right: 0;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+/* Individual rows */
+#appearance-panel .dropdown-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #E9F2F0;
+  font-size: 14px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+#appearance-panel .dropdown-section:hover {
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-1px);
+}
+
+#appearance-panel .divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+  opacity: 0.8;
+}
+
+/* Theme dots */
+#appearance-panel .theme-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+
+/* Checkmark for active theme */
+#appearance-panel .checkmark {
+  font-size: 16px;
+  color: var(--mint);
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+/* Back link */
+#appearance-panel #back-to-main {
+  font-weight: 600;
+  color: var(--mint);
+}
+
+#appearance-panel #back-to-main:hover {
+  background: rgba(80,195,163,0.1);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
@@ -896,6 +964,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
