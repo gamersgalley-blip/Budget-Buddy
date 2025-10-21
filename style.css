@@ -814,7 +814,29 @@ nav button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  vertical-align: middle;
+  filter: brightness(0.95);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
 
+nav button:hover .nav-icon {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* Make icons slightly darker in light mode */
+body.light-mode .nav-icon {
+  filter: brightness(0.8) contrast(1.1);
+}
+
+/* Optional: glow effect for active button icons */
+nav button.active .nav-icon {
+  filter: drop-shadow(0 0 6px rgba(80,195,163,0.5));
+}
 /* Light mode fixes */
 body.light-mode nav {
   background: #FFFFFF;
@@ -993,6 +1015,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
