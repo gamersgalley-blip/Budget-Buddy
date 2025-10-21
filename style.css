@@ -814,28 +814,47 @@ nav button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+/* ───────────────────────────────
+   🖼️ NAV ICON STYLING
+─────────────────────────────── */
 .nav-icon {
   width: 22px;
   height: 22px;
   margin-right: 8px;
   vertical-align: middle;
-  filter: brightness(0.95);
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease;
+  filter: brightness(0) invert(1); /* bright on dark backgrounds */
 }
 
+/* Hover effect — subtle mint glow + pop */
 nav button:hover .nav-icon {
-  transform: scale(1.1);
-  filter: brightness(1.1);
+  transform: scale(1.08);
+  filter: brightness(1.1) invert(1);
+  box-shadow: 0 0 8px rgba(80,195,163,0.4);
 }
 
-/* Make icons slightly darker in light mode */
-body.light-mode .nav-icon {
-  filter: brightness(0.8) contrast(1.1);
-}
-
-/* Optional: glow effect for active button icons */
+/* Active button icons — stronger mint glow */
 nav button.active .nav-icon {
-  filter: drop-shadow(0 0 6px rgba(80,195,163,0.5));
+  filter: brightness(1.2) invert(1);
+  box-shadow: 0 0 10px rgba(80,195,163,0.55);
+}
+
+/* Light mode adjustments — dark icons for contrast */
+body.light-mode .nav-icon {
+  filter: brightness(0) invert(0); /* darker for light backgrounds */
+  box-shadow: none;
+}
+
+/* Light mode hover and active states */
+body.light-mode nav button:hover .nav-icon {
+  transform: scale(1.08);
+  filter: brightness(0.3) saturate(1.2);
+  box-shadow: 0 0 6px rgba(80,195,163,0.25);
+}
+
+body.light-mode nav button.active .nav-icon {
+  filter: brightness(0.2) saturate(1.3);
+  box-shadow: 0 0 8px rgba(80,195,163,0.35);
 }
 /* Light mode fixes */
 body.light-mode nav {
@@ -1015,6 +1034,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
