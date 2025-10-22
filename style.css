@@ -909,7 +909,7 @@ body.light-mode .modal select:focus {
   padding: 28px;
   width: 100%;
   max-width: 360px;
-  text-align: center;
+  text-align: left;
   box-shadow: 0 8px 20px var(--shadow);
 }
 
@@ -918,6 +918,7 @@ body.light-mode .modal select:focus {
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 #login input {
@@ -1018,6 +1019,7 @@ body.theme-transition * {
 body.light-mode #theme-fader {
   opacity: 0.15; /* quick dark tint when switching to light mode */
 }
+
 
 
 
